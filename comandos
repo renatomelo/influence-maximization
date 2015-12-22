@@ -1,0 +1,21 @@
+# Configure the output
+set terminal eps
+
+set output "plots/dist.eps"
+
+# Plota o resultado usando escala normal.
+set xlabel  "Grau dos vértices"
+set ylabel "Número de vértices"
+set nokey
+plot "distribuicao.dat" using 1:2 with points 
+
+set output "plots/dist_loglog.eps"
+
+# Plota o resultado usando escala loglog.
+set xlabel  "Grau dos vértices"
+set ylabel "Número de vértices"
+set nokey
+set logscale xy
+plot "distribuicao.dat" using 1:2 with points 
+
+
