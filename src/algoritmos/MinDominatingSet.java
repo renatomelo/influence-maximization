@@ -131,33 +131,44 @@ public class MinDominatingSet {
 	public static void main(String[] args) {
 
 		DirectedSocialNetwork teste = new SocialNetworkGenerate().gerarGrafo(
-				500, 2);
+				10000, 2);
 
 		System.out.println("|V(G)| = " + teste.vertexSet().size());
 		System.out.println("|E(G)| = " + teste.edgeSet().size());
 
-		teste.exportarGrafo();
+//		teste.exportarGrafo();
+		long startTime = 0;
 
 		System.out.println("\nConjunto Dominante");
 		MinDominatingSet minDom = new MinDominatingSet();
+		
+		startTime = System.nanoTime();
 		Set<Actor> ds = minDom.greedy(teste);
+		System.out.println("Tempo: "+(System.nanoTime() - startTime)/1000);
 		System.out.println("|DS|- GreedyPlus: " + ds.size());
-
+		
+		startTime = System.nanoTime();
 		Set<Actor> ds2 = minDom.regularGreedy(teste);
+		System.out.println("Tempo: "+(System.nanoTime() - startTime)/1000);
 		System.out.println("|DS|- RegularGreedy: " + ds2.size());
-
+		
+		startTime = System.nanoTime();
 		Set<Actor> ds3 = minDom.fastGreedy(teste);
-		System.out.println("|DS|- FastGreedy: " + ds3.size());
+		System.out.println("Tempo: "+(System.nanoTime() - startTime)/1000);
+		System.out.println("|DS|- FastGreedy: " + ds3.size());		
 
 		// Cobertura de vertices
 		System.out.println();
 		System.out.println("\nCobertura de vérices");
+		startTime = System.nanoTime();
 		Set<Actor> cv = VertexCovers.find2ApproximationCover(teste);
+		System.out.println("Tempo: "+(System.nanoTime() - startTime)/1000);
+		System.out.println("|CV|- 2-aproximado: " + cv.size());
 		// Set<Actor> cv2 = VertexCovers.findGreedyCover((UndirectedGraph<Actor,
 		// DefaultWeightedEdge>) teste);
 
 		// System.out.println("|CV|- Guloso: " + cv2.size());
-		System.out.println("|CV|- 2-aproximado: " + cv.size());
+		
 
 	}
 }

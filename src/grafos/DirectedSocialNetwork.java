@@ -180,10 +180,10 @@ public class DirectedSocialNetwork extends
 	
 	
 	@Override
-	public double overageDiffusion(HashSet<Actor> seed, boolean ic) {
+	public double espectedSpread(HashSet<Actor> seed, boolean ic) {
 		double media = 0;
 		int soma = 0;
-		int repeticoes = 1000;
+		int repeticoes = 500;
 
 		if (!ic) {
 			HashSet<Actor> ativados = linearThresholdDiffusion(seed);
@@ -327,8 +327,8 @@ public class DirectedSocialNetwork extends
 			System.out.println(a.toString());
 		}
 
-		System.out.println("Difusão média no modelo IC = "+g.overageDiffusion(seed, true));
-		System.out.println("Difusão média no modelo LT = "+g.overageDiffusion(seed, false));
+		System.out.println("Difusão média no modelo IC = "+g.espectedSpread(seed, true));
+		System.out.println("Difusão média no modelo LT = "+g.espectedSpread(seed, false));
 		
 //		g.activate(seed);
 //		g.visualize();

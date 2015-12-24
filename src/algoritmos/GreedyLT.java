@@ -56,7 +56,7 @@ public class GreedyLT implements SeedChooser<Actor> {
 		grafo.activate(v);
 		ativados.add(v);
 		
-		return grafo.overageDiffusion(ativados, false);
+		return grafo.espectedSpread(ativados, false);
 	}
 
 	public void clearActive() {
@@ -72,16 +72,16 @@ public class GreedyLT implements SeedChooser<Actor> {
 		
 		startTime = System.nanoTime();
 		HashSet<Actor> seed2 = new OriginalGreedy(g).escolher(15);
-		System.out.println("OriginalGreedy = "+g.overageDiffusion(seed2, true)+", tempo: "+(System.nanoTime() - startTime)/1000);
+		System.out.println("OriginalGreedy = "+g.espectedSpread(seed2, true)+", tempo: "+(System.nanoTime() - startTime)/1000);
 		
 		startTime =System.nanoTime();
 		HashSet<Actor> seed1 = new GreedyIC(g).escolher(20);
-		System.out.println("GreedyIC = "+g.overageDiffusion(seed1, true)+", tempo: "+(System.nanoTime() - startTime)/1000);
+		System.out.println("GreedyIC = "+g.espectedSpread(seed1, true)+", tempo: "+(System.nanoTime() - startTime)/1000);
 		startTime =System.nanoTime();
 		
 		startTime =System.nanoTime();
 		HashSet<Actor> seed = new GreedyIC(g).escolher(20);
-		System.out.println("GreedyLT = "+g.overageDiffusion(seed, false)+", tempo: "+(System.nanoTime() - startTime)/1000);
+		System.out.println("GreedyLT = "+g.espectedSpread(seed, false)+", tempo: "+(System.nanoTime() - startTime)/1000);
 		
 //		g.activate(seed);
 //		g.visualize();

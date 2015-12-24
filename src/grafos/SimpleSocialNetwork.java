@@ -139,14 +139,6 @@ public class SimpleSocialNetwork extends SimpleWeightedGraph<Actor, DefaultWeigh
 		}
 		return new HashSet<>(actors);
 	}
-
-	
-	@Override
-	public double overageDiffusion(HashSet<Actor> seed, boolean ic) {
-		int media = 0;
-		
-		return media;
-	}
 	
 	public HashSet<Actor> neighborsOf(Actor v) {
 		HashSet<Actor> adj = new HashSet<>();
@@ -199,5 +191,11 @@ public class SimpleSocialNetwork extends SimpleWeightedGraph<Actor, DefaultWeigh
 	public HashSet<Actor> indepCascadeDiffusion(HashSet<Actor> initiators) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public double espectedSpread(HashSet<Actor> seed, boolean ic) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

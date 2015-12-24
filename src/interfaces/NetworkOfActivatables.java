@@ -59,6 +59,6 @@ public interface NetworkOfActivatables<V extends Activatable> {
 	
 	public HashSet<V> indepCascadeDiffusion(HashSet<V> seed);
 	
-	public double overageDiffusion(HashSet<V> seed, boolean ic);
+	double espectedSpread(HashSet<Actor> seed, boolean ic);
 
 }

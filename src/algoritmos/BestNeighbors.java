@@ -15,7 +15,7 @@ import interfaces.SeedChooser;
  * Como o grafo é direcionado o tem muitos "best neighbors" se o grafo é grande
  */
 public class BestNeighbors implements SeedChooser<Actor> {
-	public DirectedSocialNetwork grafo = null;
+	private DirectedSocialNetwork grafo = null;
 
 	public BestNeighbors(DirectedSocialNetwork g) {
 		this.grafo = g;

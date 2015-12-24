@@ -34,17 +34,12 @@ public class GreedyIC implements SeedChooser<Actor> {
 
 	private Actor MaxSpread(HashSet<Actor> semente) {
 		Actor max = null;
-		int repeticoes = 100;
 		double spread = 0;
 
 		for (Actor v : grafo.vertexSet()) {
 			if (!v.isActive()) {
-				int soma = 0;
-				for (int i = 0; i < repeticoes; i++) {
-
-					soma += cascata(v, semente);
-				}
-				double media = soma / repeticoes;
+				
+				double media = cascata(v, semente);
 
 				if (media > spread) {
 					spread = media;
@@ -56,17 +51,11 @@ public class GreedyIC implements SeedChooser<Actor> {
 		return max;
 	}
 
-	private int cascata(Actor v, HashSet<Actor> semente) {
-		HashSet<Actor> ativados = grafo.activate(semente);
-		grafo.activate(v);
+	private double cascata(Actor v, HashSet<Actor> semente) {		
+		HashSet<Actor> ativados = new HashSet<>(semente);
 		ativados.add(v);
 		
-		ativados.addAll(grafo.indepCascadeDiffusion(ativados));
-		
-		int tamanho = ativados.size();
-		grafo.deactivate(ativados);	
-		
-		return tamanho;
+		return grafo.espectedSpread(ativados, true);
 	}
 
 	public void clearActive() {
@@ -77,16 +66,16 @@ public class GreedyIC implements SeedChooser<Actor> {
 	
 	public static void main(String[] args) {
 		DirectedSocialNetwork g;
-		g = new  SocialNetworkGenerate().gerarGrafo(850, 2.8);
+		g = new  SocialNetworkGenerate().gerarGrafo(500, 2.8);
 		long startTime = 0;
 		
 		startTime = System.nanoTime();
-		HashSet<Actor> seed2 = new OriginalGreedy(g).escolher(20);
-		System.out.println("OriginalGreedy = "+g.overageDiffusion(seed2, true)+", tempo: "+(System.nanoTime() - startTime)/1000);
+		HashSet<Actor> seed2 = new OriginalGreedy(g).escolher(10);
+		System.out.println("OriginalGreedy = "+g.espectedSpread(seed2, true)+", tempo: "+(System.nanoTime() - startTime)/1000);
 		
 		startTime =System.nanoTime();
-		HashSet<Actor> seed1 = new GreedyIC(g).escolher(20);
-		System.out.println("GeneralGreedy = "+g.overageDiffusion(seed1, true)+", tempo: "+(System.nanoTime() - startTime)/1000);
+		HashSet<Actor> seed1 = new GreedyIC(g).escolher(10);
+		System.out.println("GeneralGreedy = "+g.espectedSpread(seed1, true)+", tempo: "+(System.nanoTime() - startTime)/1000);
 		
 //		g.activate(seed);
 //		g.visualize();
