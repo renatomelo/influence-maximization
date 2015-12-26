@@ -9,24 +9,25 @@ public class MeuPlot extends JGnuplot {
 	String output = null;
 	//String beforeStyle="linewidth=4";
 	
-	public void plotarPropagacaoEsperada(double[] tamSemente, double[] y1, double[] y2, double[] y3, double[] y4, double[] y5){
+	public void plotPropagacao(double[] tamSemente, double[] y1, double[] y2, double[] y3, double[] y4, String outDir){
 		JGnuplot plot = new JGnuplot();
 		Plot plotPropagacao = new Plot("Propagação Esperada") {
-			String xlabel = "'Tam. Semente'", ylabel = "'Propagacao Esperada'";
+			String xlabel = "'|S|'", ylabel = "'sigma(S)'";
+			String extra = "set key top left";
 		};
 		
-		DataTableSet dts = plotPropagacao.addNewDataTableSet("Propagacao");
-		dts.addNewDataTable("HighDegree", tamSemente, y1);
-		dts.addNewDataTable("BestNeighbors", tamSemente, y2);
-		dts.addNewDataTable("RandomSeed", tamSemente, y3);
-		dts.addNewDataTable("DominatingSeed", tamSemente, y4);
-		dts.addNewDataTable("CELF", tamSemente, y5);
+		DataTableSet dts = plotPropagacao.addNewDataTableSet("Propagação Esperada");
+		dts.addNewDataTable("DominatingSeed", tamSemente, y1);
+		dts.addNewDataTable("CELF", tamSemente, y2);
+		dts.addNewDataTable("HighDegree", tamSemente, y3);
+		dts.addNewDataTable("RandomSeed", tamSemente, y4);
 		
 		plotPropagacao.add(dts);
 		plot.compile(plotPropagacao, plot.plot2d, "propagacao_esperada.plt");
 		
-		this.terminal = "pngcairo enhanced dashed";
-		this.output = "'plots/IC/propagacao_esperada.png'";
+//		this.terminal = "epslatex color colortext dashed";
+		this.terminal = "eps color dashed";
+		this.output = outDir+"propagacao.eps'";
 		this.execute(plotPropagacao, this.plot2d);
 	}
 	
@@ -51,23 +52,24 @@ public class MeuPlot extends JGnuplot {
 		this.execute(plotPropagacao, this.plot2d);
 	}
 	
-	public void plotarTempoExecucao(double[] tamSemente, double[] y1, double[] y2, double[] y3, double[] y4, double[] y5){
+	public void plotTempoExecucao(double[] tamSemente, double[] y1, double[] y2, double[] y3, double[] y4, String outDir){
 		JGnuplot plot = new JGnuplot();
 		Plot plotTempo = new Plot("Tempo de execução") {
-			String xlabel = "'Tam. Semente'", ylabel = "'Tempo de execução'";
+			String xlabel = "'|S|'", ylabel = "'Tempo de execução'";
+			String extra = "set key top left";
 		};		
 		
-		DataTableSet dts2 = plotTempo.addNewDataTableSet("TempoExecucao");
-		dts2.addNewDataTable("HighDegree", tamSemente, y1);
-		dts2.addNewDataTable("BestNeighbors", tamSemente, y2);
-		dts2.addNewDataTable("RandomSeed", tamSemente, y3);
-		dts2.addNewDataTable("DominatingSeed", tamSemente, y4);
-		dts2.addNewDataTable("CELF", tamSemente, y5);
+		DataTableSet dts2 = plotTempo.addNewDataTableSet("Tempo de execução");
+		dts2.addNewDataTable("DominatingSeed", tamSemente, y1);
+		dts2.addNewDataTable("CELF", tamSemente, y2);
+		dts2.addNewDataTable("HighDegree", tamSemente, y3);
+		dts2.addNewDataTable("RandomSeed", tamSemente, y4);
 		plotTempo.add(dts2);		
 		plot.compile(plotTempo, plot.plot2d, "tempo_execucao.plt");
 		
-		this.terminal = "pngcairo enhanced dashed";
-		this.output = "'plots/IC/tempo_execucao.png'";
+//		this.terminal = "epslatex color colortext dashed";
+		this.terminal = "eps color dashed";
+		this.output = outDir+"tempo.eps'";
 		this.execute(plotTempo, this.plot2d);
 	}
 	

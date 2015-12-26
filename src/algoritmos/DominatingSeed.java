@@ -184,7 +184,7 @@ public class DominatingSeed implements SeedChooser<Actor> {
 
 	public static void main(String[] args) {
 		DirectedSocialNetwork g = new SocialNetworkGenerate()
-				.gerarGrafo(600, 2.5);
+				.gerarGrafo(800, 2.5);
 		HashSet<Actor> seed = new DominatingSeed(g).escolherGreedy(15);
 		
 		 HashSet<Actor> ativos = g.indepCascadeDiffusion(seed);
