@@ -25,9 +25,9 @@ import com.google.common.collect.MinMaxPriorityQueue;
  */
 public class MinDominatingSet {
 
-	public Set<Actor> regularGreedy(DirectedSocialNetwork grafo) {
+	public HashSet<Actor> regularGreedy(DirectedSocialNetwork grafo) {
 		// DS <-- {}
-		Set<Actor> dominante = new HashSet<Actor>();
+		HashSet<Actor> dominante = new HashSet<Actor>();
 
 		// G' <-- G
 		DirectedSocialNetwork g = grafo.copy();
@@ -56,9 +56,9 @@ public class MinDominatingSet {
 		return dominante;
 	}
 
-	public Set<Actor> greedy(DirectedSocialNetwork grafo) {
+	public HashSet<Actor> greedy(DirectedSocialNetwork grafo) {
 		// DS <-- {}
-		Set<Actor> dominante = new HashSet<Actor>();
+		HashSet<Actor> dominante = new HashSet<Actor>();
 
 		// G' <-- G
 		DirectedSocialNetwork g = grafo.copy();
@@ -97,6 +97,10 @@ public class MinDominatingSet {
 		return dominante;
 	}
 
+	/**
+	 * Está errado, tem que olhar melhor a questão da direção das arestas
+	 **/
+	
 	public HashSet<Actor> fastGreedy(DirectedSocialNetwork grafo) {
 		int n = grafo.vertexSet().size();
 
@@ -117,24 +121,24 @@ public class MinDominatingSet {
 
 		while (dominados.size() < n) {
 			Actor v = heapMinMax.removeLast();
-
+			dominados.add(v);
 			Set<Actor> vizinhos = grafo.outNeighborsOf(v);
 
 			if (dominados.addAll(vizinhos)) {
 				dominante.add(v);
 			}
-			dominados.add(v);
+			
 		}
 		return dominante;
 	}
 
 	public static void main(String[] args) {
 
-		DirectedSocialNetwork teste = new SocialNetworkGenerate().gerarGrafo(
-				10000, 2);
+		DirectedSocialNetwork g = new SocialNetworkGenerate().gerarGrafo(
+				100, 2.5);
 
-		System.out.println("|V(G)| = " + teste.vertexSet().size());
-		System.out.println("|E(G)| = " + teste.edgeSet().size());
+		System.out.println("|V(G)| = " + g.vertexSet().size());
+		System.out.println("|E(G)| = " + g.edgeSet().size());
 
 //		teste.exportarGrafo();
 		long startTime = 0;
@@ -143,27 +147,92 @@ public class MinDominatingSet {
 		MinDominatingSet minDom = new MinDominatingSet();
 		
 		startTime = System.nanoTime();
-		Set<Actor> ds = minDom.greedy(teste);
+		HashSet<Actor> ds = (HashSet<Actor>) minDom.greedy(g);
 		System.out.println("Tempo: "+(System.nanoTime() - startTime)/1000);
 		System.out.println("|DS|- GreedyPlus: " + ds.size());
+		System.out.println("\nspread: "+g.espectedSpread(ds, true));
+		g.activate(ds);
+		g.visualize();
 		
 		startTime = System.nanoTime();
-		Set<Actor> ds2 = minDom.regularGreedy(teste);
-		System.out.println("Tempo: "+(System.nanoTime() - startTime)/1000);
-		System.out.println("|DS|- RegularGreedy: " + ds2.size());
+		HashSet<Actor> ds2 = (HashSet<Actor>) minDom.regularGreedy(g);
+//		System.out.println("Tempo: "+(System.nanoTime() - startTime)/1000);
+		System.out.println("\n\n|DS|- RegularGreedy: " + ds2.size());
+//		System.out.println("Vertices dominantes:");
+//		for (Actor v : ds2) {
+//			System.out.print(v+" ");
+//		}
+		System.out.println("\nspread: "+g.espectedSpread(ds2, true));
+		
 		
 		startTime = System.nanoTime();
-		Set<Actor> ds3 = minDom.fastGreedy(teste);
-		System.out.println("Tempo: "+(System.nanoTime() - startTime)/1000);
-		System.out.println("|DS|- FastGreedy: " + ds3.size());		
+		HashSet<Actor> ds3 = minDom.fastGreedy(g);
+//		System.out.println("Tempo: "+(System.nanoTime() - startTime)/1000);
+		System.out.println("\n\n|DS|- FastGreedy: " + ds3.size());	
+		System.out.println("Vertices dominantes:");
+//		for (Actor v : ds3) {
+//			System.out.print(v.toString()+" ");
+//		}
+		System.out.println("\nspread: "+g.espectedSpread(ds3, true));
+		g.activate(ds3);
+		g.visualize();
+		
+//		HashSet<Actor> seed = new LazyGreedy(g).escolher(ds3.size());
+//		System.out.println("\nVertices Influentes: "+seed.size());
+//		for (Actor v : seed) {
+//			System.out.print(v.toString()+" ");
+//		}
+//		System.out.println("\n spread: "+g.espectedSpread(seed, true));
+////		g.activate(seed);
+////		g.visualize();
+////		g.deactivate(seed);
+//		
+//		System.out.println("\nVertices influentes do fastGreedy:");
+//		HashSet<Actor> interseccao = new HashSet<>(); 
+//		int i = 0;
+//		for (Actor v : seed) {
+//			g.deactivate(v);
+//			for (Actor w : ds3) {
+//				if(v.equals(w)){
+//					System.out.print(v.toString()+" ");
+//					interseccao.add(v);
+//					i++;
+//				}
+//			}
+//		}
+//		System.out.println(": "+i);
+//		System.out.println("\n spread: "+g.espectedSpread(interseccao, true));
+////		g.activate(interseccao);
+////		g.visualize();
+////		g.deactivate(interseccao);
+//		
+//		HashSet<Actor> seed2 = new DominatingSeed(g).escolher(interseccao.size());
+//		System.out.println("\nVertices DiminatingSeed: "+seed2.size());
+//		for (Actor v : seed2) {
+//			System.out.print(v.toString()+" ");
+//		}
+//		System.out.println("\n spread: "+g.espectedSpread(seed2, true));
+//		g.activate(seed2);
+//		g.visualize();
+//		g.deactivate(seed2);
+		
+		HashSet<Actor> artics = g.findArticulations();
+		System.out.println("\nVertices de corte: "+artics.size());
+//		for (Actor v : artics) {
+//			System.out.print(v.toString()+" ");
+//		}
+		System.out.println("\n spread: "+g.espectedSpread(artics, true));
+//		g.activate(artics);
+//		g.visualize();
+		
 
 		// Cobertura de vertices
-		System.out.println();
-		System.out.println("\nCobertura de vérices");
-		startTime = System.nanoTime();
-		Set<Actor> cv = VertexCovers.find2ApproximationCover(teste);
-		System.out.println("Tempo: "+(System.nanoTime() - startTime)/1000);
-		System.out.println("|CV|- 2-aproximado: " + cv.size());
+//		System.out.println();
+//		System.out.println("\nCobertura de vérices");
+//		startTime = System.nanoTime();
+//		Set<Actor> cv = VertexCovers.find2ApproximationCover(teste);
+//		System.out.println("Tempo: "+(System.nanoTime() - startTime)/1000);
+//		System.out.println("|CV|- 2-aproximado: " + cv.size());
 		// Set<Actor> cv2 = VertexCovers.findGreedyCover((UndirectedGraph<Actor,
 		// DefaultWeightedEdge>) teste);
 

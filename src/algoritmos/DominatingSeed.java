@@ -2,6 +2,8 @@ package algoritmos;
 
 import java.util.HashSet;
 import java.util.PriorityQueue;
+import java.util.Random;
+import java.util.Set;
 
 import algoritmos.MarginalGain;
 import geradores.SocialNetworkGenerate;
@@ -22,19 +24,6 @@ public class DominatingSeed implements SeedChooser<Actor> {
 		this.grafo = g;
 	}
 
-	// @Override
-	// public HashSet<Actor> escolher(int k) {
-	// HashSet<Actor> semente = new HashSet<Actor>();
-	// HashSet<Actor> minSet = new HashSet<Actor>();
-	//
-	// MinDominatingSet ds = new MinDominatingSet();
-	// minSet = ds.fastGreedy(grafo);
-	//
-	// semente.addAll(grafo.verticesGrauMaior(minSet, k));
-	//
-	// return semente;
-	// }
-
 	@Override
 	public HashSet<Actor> escolher(int k) {
 		HashSet<Actor> semente = new HashSet<Actor>();
@@ -44,12 +33,99 @@ public class DominatingSeed implements SeedChooser<Actor> {
 		minSet = ds.fastGreedy(grafo);
 
 		if (minSet.size() < k) {
-			System.out.println("Erro: o cojunto domintante não é menor que K");
+			System.out.println("Erro: o cojunto domintante é menor que K");
 			return null;
 		}
 
 		// create priority queue of all nodes, with marginal gain delta +inf
 		PriorityQueue<MarginalGain> fila = priorityQueueOfGains(minSet);
+
+		double MaxSpread = 0;
+
+		while (semente.size() < k) {
+			// set all gains invalid
+			for (MarginalGain mg : fila) {
+				mg.setValid(false);
+			}
+
+			while (true) {
+				MarginalGain max = fila.poll();
+				if (max.isValid() == true) {
+					semente.add(max.getVertice());
+					MaxSpread = MaxSpread + max.getGain();
+					break;
+				} else {
+					double sigma = cascata(max.getVertice(), semente);
+					double delta = sigma - MaxSpread;
+					max.setGain(delta);
+					max.setValid(true);
+					fila.add(max);
+				}
+			}
+		}
+
+		return semente;
+	}
+	
+	public HashSet<Actor> escolherGreedy(int k) {
+		HashSet<Actor> semente = new HashSet<Actor>();
+		HashSet<Actor> minSet = new HashSet<Actor>();
+
+		MinDominatingSet ds = new MinDominatingSet();
+		minSet = ds.greedy(grafo);
+
+		if (minSet.size() < k) {
+			System.out.println("Erro: o cojunto domintante é menor que K");
+			return null;
+		}
+
+		// create priority queue of all nodes, with marginal gain delta +inf
+		PriorityQueue<MarginalGain> fila = priorityQueueOfGains(minSet);
+
+		double MaxSpread = 0;
+
+		while (semente.size() < k) {
+			// set all gains invalid
+			for (MarginalGain mg : fila) {
+				mg.setValid(false);
+			}
+
+			while (true) {
+				MarginalGain max = fila.poll();
+				if (max.isValid() == true) {
+					semente.add(max.getVertice());
+					MaxSpread = MaxSpread + max.getGain();
+					break;
+				} else {
+					double sigma = cascata(max.getVertice(), semente);
+					double delta = sigma - MaxSpread;
+					max.setGain(delta);
+					max.setValid(true);
+					fila.add(max);
+				}
+			}
+		}
+
+		return semente;
+	}
+
+	public HashSet<Actor> escolherRandom(int k) {
+		HashSet<Actor> semente = new HashSet<Actor>();
+		Set<Actor> vSet = grafo.vertexSet();
+		HashSet<Actor> rSet = new HashSet<Actor>();
+
+		Actor[] vertices = new Actor[vSet.size()];
+		int i = 0;
+		for (Actor a : vSet)
+			vertices[i++] = a;
+
+		Random rand = new Random();
+		while (rSet.size() < vSet.size()/4) {
+			rSet.add(vertices[rand.nextInt(vertices.length)]);
+		}
+
+		// create priority queue of all nodes, with marginal gain delta +inf
+		PriorityQueue<MarginalGain> fila = priorityQueueOfGains(rSet);
 
 		double MaxSpread = 0;
 
@@ -108,15 +184,30 @@ public class DominatingSeed implements SeedChooser<Actor> {
 
 	public static void main(String[] args) {
 		DirectedSocialNetwork g = new SocialNetworkGenerate()
-				.gerarGrafo(100, 2);
-		HashSet<Actor> seed = new DominatingSeed(g).escolher(10);
-		g.activate(seed);
-		// HashSet<Actor> ativos = g.indepCascadeDiffusion(seed);
-		// HashSet<Actor> ativos = g.linearThresholdDiffusion(seed);
+				.gerarGrafo(600, 2.5);
+		HashSet<Actor> seed = new DominatingSeed(g).escolherGreedy(15);
+		
+		 HashSet<Actor> ativos = g.indepCascadeDiffusion(seed);
 		System.out.println("|V(G)| = " + g.vertexSet().size());
 		System.out.println("|S| = " + seed.size());
-		// System.out.println("|A| = "+ativos.size());
-		g.visualize();
+		 System.out.println("|A| = "+ativos.size());
+		 g.deactivate(ativos);
+//		g.activate(seed);
+//		g.visualize();
+		 
+		 HashSet<Actor> seed2 = new DominatingSeed(g).escolher(15);
+			
+		 HashSet<Actor> ativos2 = g.indepCascadeDiffusion(seed2);
+		System.out.println("\n|S| = " + seed2.size());
+		 System.out.println("|A| = "+ativos2.size());
+		 g.deactivate(ativos2);
+		 
+		 HashSet<Actor> seed3 = new DominatingSeed(g).escolherRandom(15);
+			
+		 HashSet<Actor> ativos3 = g.indepCascadeDiffusion(seed3);
+		System.out.println("\n|S| = " + seed3.size());
+		 System.out.println("|A| = "+ativos3.size());
+		 
 	}
 
 }

@@ -11,8 +11,11 @@ import java.util.Stack;
 
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.Graph;
+import org.jgrapht.UndirectedGraph;
+import org.jgrapht.alg.BlockCutpointGraph;
 import org.jgrapht.ext.DOTExporter;
 import org.jgrapht.ext.IntegerNameProvider;
+import org.jgrapht.graph.AsUndirectedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleDirectedWeightedGraph;
 
@@ -183,7 +186,7 @@ public class DirectedSocialNetwork extends
 	public double espectedSpread(HashSet<Actor> seed, boolean ic) {
 		double media = 0;
 		int soma = 0;
-		int repeticoes = 500;
+		int repeticoes = 1000;
 
 		if (!ic) {
 			HashSet<Actor> ativados = linearThresholdDiffusion(seed);
@@ -281,6 +284,22 @@ public class DirectedSocialNetwork extends
 			}
 		}
 		return set;
+	}
+	
+	/**
+	 * Ignora as direções das arestas e encontra os vértices de corte 
+	 * do grafo não direcionado resultante
+	 * 
+	 * @return Conjunto de vértices de corte
+	 */
+	public HashSet<Actor> findArticulations() {
+		UndirectedGraph<Actor, DefaultWeightedEdge> g;
+		g = new AsUndirectedGraph<>(this);
+
+		BlockCutpointGraph<Actor, DefaultWeightedEdge> blocos;
+		blocos = new BlockCutpointGraph<>(g);
+
+		return (HashSet<Actor>) blocos.getCutpoints();
 	}
 
 	public void exportarGrafo() {

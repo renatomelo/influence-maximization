@@ -130,9 +130,9 @@ public class Simulacao {
 
 	public static void main(String[] args) {
 		DirectedSocialNetwork g;
-//		g = new SocialNetworkGenerate().gerarGrafo(2500, 2.8);
+		g = new SocialNetworkGenerate().gerarGrafo(2500, 2.8);
 //		g = new GraphReader().readHep();
-		g = new GraphReader().readPhy();
+//		g = new GraphReader().readPhy();
 //		g = new GraphReader().readEpinions();
 		System.out.println("|V(G)| = " + g.vertexSet().size());
 		System.out.println("|E(G)| = " + g.edgeSet().size());
