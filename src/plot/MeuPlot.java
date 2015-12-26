@@ -25,9 +25,9 @@ public class MeuPlot extends JGnuplot {
 		plotPropagacao.add(dts);
 		plot.compile(plotPropagacao, plot.plot2d, "propagacao_esperada.plt");
 		
-//		this.terminal = "epslatex color colortext dashed";
-		this.terminal = "eps color dashed";
-		this.output = outDir+"propagacao.eps'";
+		this.terminal = "epslatex color colortext dashed";
+//		this.terminal = "eps color dashed";
+		this.output = outDir+"propagacao.tex'";
 		this.execute(plotPropagacao, this.plot2d);
 	}
 	
@@ -67,9 +67,9 @@ public class MeuPlot extends JGnuplot {
 		plotTempo.add(dts2);		
 		plot.compile(plotTempo, plot.plot2d, "tempo_execucao.plt");
 		
-//		this.terminal = "epslatex color colortext dashed";
-		this.terminal = "eps color dashed";
-		this.output = outDir+"tempo.eps'";
+		this.terminal = "epslatex color colortext dashed";
+//		this.terminal = "eps color dashed";
+		this.output = outDir+"tempo.tex'";
 		this.execute(plotTempo, this.plot2d);
 	}
 	

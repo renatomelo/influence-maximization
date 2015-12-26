@@ -47,7 +47,7 @@ public class Simulacao {
 					+ ", tempo = " + tempo2[i] + " segundos");
 
 			excutionTime = System.currentTimeMillis() * -1;
-			HashSet<Actor> seed3 = new DominatingSeed(g).escolherGreedy(k);
+			HashSet<Actor> seed3 = new HightDegree(g).escolher(k);
 			excutionTime += System.currentTimeMillis();
 			tempo3[i] = (excutionTime / 1000.0f);
 			sigma3[i] = g.espectedSpread(seed3, true);
@@ -73,14 +73,14 @@ public class Simulacao {
 
 	public static void main(String[] args) {
 //		simularArtificial();
-//		 simularHep();
-		 simularPhy();
+		 simularHep();
+//		 simularPhy();
 		// simularEpinions();
 	}
 
 	private static void simularArtificial() {
 		DirectedSocialNetwork g;
-		g = new SocialNetworkGenerate().gerarGrafo(300, 2.8);
+		g = new SocialNetworkGenerate().gerarGrafo(1000, 2.5);
 		System.out.println("|V(G)| = " + g.vertexSet().size());
 		System.out.println("|E(G)| = " + g.edgeSet().size());
 
