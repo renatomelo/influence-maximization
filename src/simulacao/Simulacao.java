@@ -73,9 +73,9 @@ public class Simulacao {
 
 	public static void main(String[] args) {
 //		simularArtificial();
-		 simularHep();
-//		 simularPhy();
-		// simularEpinions();
+//		 simularHep();
+		 simularPhy();
+//		 simularEpinions();
 	}
 
 	private static void simularArtificial() {

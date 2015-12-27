@@ -83,12 +83,12 @@ public class GraphReader {
 	*/
 	public double trivalencyModel() {
 
-		 int p = (int) (Math.random() * 3);
-		 double[] choice = { 0.2, 0.04, 0.008 };
-		 return choice[p];
+//		 int p = (int) (Math.random() * 3);
+//		 double[] choice = { 0.2, 0.04, 0.008 };
+//		 return choice[p];
 
 		// uniform IC model
-		// return (double)1/100;
+		 return (double)10/100;
 //		return Math.random();
 	}
 
