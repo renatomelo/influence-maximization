@@ -71,16 +71,9 @@ public class Simulacao {
 				outDir);
 	}
 
-	public static void main(String[] args) {
-//		simularArtificial();
-		 simularHep();
-//		 simularPhy();
-		// simularEpinions();
-	}
-
 	private static void simularArtificial() {
 		DirectedSocialNetwork g;
-		g = new SocialNetworkGenerate().gerarGrafo(1000, 2.5);
+		g = new SocialNetworkGenerate().gerarGrafo(100, 2.5);
 		System.out.println("|V(G)| = " + g.vertexSet().size());
 		System.out.println("|E(G)| = " + g.edgeSet().size());
 
@@ -122,6 +115,13 @@ public class Simulacao {
 		String outDir = "'plots/hep/";
 
 		new Simulacao().simularIC(g, outDir);
+	}
+	
+	public static void main(String[] args) {
+//		simularArtificial();
+		 simularHep();
+//		 simularPhy();
+		// simularEpinions();
 	}
 
 }
