@@ -31,7 +31,7 @@ public class DominatingSeed implements SeedChooser<Actor> {
 
 		MinDominatingSet ds = new MinDominatingSet();
 		minSet = ds.fastGreedy(grafo);
-
+		System.out.println("|DS| = " + minSet.size());
 		if (minSet.size() < k) {
 			System.out.println("Erro: o cojunto domintante é menor que K");
 			return null;

@@ -1,18 +1,14 @@
 package algoritmos;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.PriorityQueue;
 import java.util.Set;
 
-import org.jgrapht.Graph;
 import org.jgrapht.UndirectedGraph;
 import org.jgrapht.alg.BlockCutpointGraph;
 import org.jgrapht.graph.AsUndirectedGraph;
-import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import geradores.GeradorGrafoGnp;
 import geradores.SocialNetworkGenerate;
 import grafos.Actor;
 import grafos.DirectedSocialNetwork;

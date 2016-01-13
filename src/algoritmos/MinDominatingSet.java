@@ -3,20 +3,10 @@ package algoritmos;
 import geradores.SocialNetworkGenerate;
 import grafos.Actor;
 import grafos.DirectedSocialNetwork;
-
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.jgrapht.Graph;
-import org.jgrapht.UndirectedGraph;
-import org.jgrapht.alg.VertexCovers;
-import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.Subgraph;
-
 import util.ComparaPorGrau;
-
 import com.google.common.collect.MinMaxPriorityQueue;
 
 /*

@@ -1,6 +1,10 @@
 package simulacao;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashSet;
+import javax.media.j3d.PhysicalBody;
 
 import plot.MeuPlot;
 import readgraph.GraphReader;
@@ -73,55 +77,64 @@ public class Simulacao {
 
 	private static void simularArtificial() {
 		DirectedSocialNetwork g;
-		g = new SocialNetworkGenerate().gerarGrafo(100, 2.5);
+		g = new SocialNetworkGenerate().gerarGrafo(30000, 2.8);
 		System.out.println("|V(G)| = " + g.vertexSet().size());
 		System.out.println("|E(G)| = " + g.edgeSet().size());
 
 		String outDir = "'plots/tex/";
 
 		new Simulacao().simularIC(g, outDir);
-		
+
 	}
 
 	private static void simularPhy() {
 		DirectedSocialNetwork g;
 		g = new GraphReader().readPhy();
+		System.out.println("Phy.txt");
 		System.out.println("|V(G)| = " + g.vertexSet().size());
 		System.out.println("|E(G)| = " + g.edgeSet().size());
-		
+
 		String outDir = "'plots/phy/";
 
 		new Simulacao().simularIC(g, outDir);
 	}
 
 	private static void simularEpinions() {
+		System.out.println("Epinions.txt");
 		DirectedSocialNetwork g;
 		g = new GraphReader().readEpinions();
-		
+
 		System.out.println("|V(G)| = " + g.vertexSet().size());
 		System.out.println("|E(G)| = " + g.edgeSet().size());
-		
+
 		String outDir = "'plots/epinions/";
 
 		new Simulacao().simularIC(g, outDir);
 	}
 
 	private static void simularHep() {
+		System.out.println("Hep.txt");
 		DirectedSocialNetwork g;
 		g = new GraphReader().readHep();
 		System.out.println("|V(G)| = " + g.vertexSet().size());
 		System.out.println("|E(G)| = " + g.edgeSet().size());
-		
+
 		String outDir = "'plots/hep/";
 
 		new Simulacao().simularIC(g, outDir);
 	}
-	
-	public static void main(String[] args) {
-//		simularArtificial();
-		 simularHep();
-//		 simularPhy();
-		// simularEpinions();
-	}
 
+	public static void main(String[] args) {
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		Date data = new Date();
+		System.out.println("Data de início: " + dateFormat.format(data));
+//		simularArtificial();
+//		System.out.println("Data de término: " + dateFormat.format(data));
+		simularPhy();
+		System.out.println("Data de término: " + dateFormat.format(data));
+		simularEpinions();
+		System.out.println("Data de término: " + dateFormat.format(data));
+		simularHep();
+		System.out.println("Data de término: " + dateFormat.format(data));
+	}
 }

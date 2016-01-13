@@ -5,11 +5,8 @@ import grafos.Actor;
 import grafos.DirectedSocialNetwork;
 import interfaces.SeedChooser;
 
-import java.io.IOException;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.PriorityQueue;
-import java.util.Set;
 
 public class LazyGreedy implements SeedChooser<Actor> {
 	private DirectedSocialNetwork grafo = null;
