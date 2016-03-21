@@ -122,7 +122,7 @@ public class GeradorModeloGRG {
 					if (Math.random() < p){
 						DefaultWeightedEdge e;
 						e = g.addEdge(vertices.get(i), vertices.get(j));
-						g.setEdgeWeight(e, Math.random());
+						g.setEdgeWeight(e, peso());
 					}
 				}
 			}
@@ -135,12 +135,24 @@ public class GeradorModeloGRG {
 						if (Math.random() < p){
 							DefaultWeightedEdge e;
 							e = g.addEdge(vertices.get(i), vertices.get(j));
-							g.setEdgeWeight(e, Math.random());
+							g.setEdgeWeight(e, peso());
 						}
 					}
 				}
 			}
 		}
 		return g;
+	}
+	
+	public double peso() {
+
+		// int p = (int) (Math.random() * 3);
+		// double[] choice = { 0.2, 0.04, 0.008 };
+		// return choice[p];
+
+		// uniform IC model
+//		 return (double)10/100;
+//		return 0.025;
+		return (Math.random())/4;
 	}
 }

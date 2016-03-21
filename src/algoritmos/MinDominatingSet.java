@@ -108,16 +108,45 @@ public class MinDominatingSet {
 		}
 
 		Set<Actor> dominados = new HashSet<>();
-
 		while (dominados.size() < n) {
+			
 			Actor v = heapMinMax.removeLast();
-			dominados.add(v);
 			Set<Actor> vizinhos = grafo.outNeighborsOf(v);
 
 			if (dominados.addAll(vizinhos)) {
 				dominante.add(v);
 			}
+			dominados.add(v);
+		}
+		return dominante;
+	}
+	
+	public HashSet<Actor> fastGreedy2(DirectedSocialNetwork grafo) {
+		int n = grafo.vertexSet().size();
+
+		// DS <-- {}
+		HashSet<Actor> dominante = new HashSet<>();
+
+		// compare os vertices pelo grau
+		ComparaPorGrau comp = new ComparaPorGrau(grafo);
+
+		MinMaxPriorityQueue<Actor> fila = null;
+		fila = MinMaxPriorityQueue.orderedBy(comp).maximumSize(n)
+				.create();
+		for (Actor v : grafo.vertexSet()) {
+			fila.add(v);
+		}
+
+		Set<Actor> dominados = new HashSet<>();
+		while (!fila.isEmpty()) {
 			
+			Actor v = fila.removeLast();
+			Set<Actor> vizinhos = grafo.outNeighborsOf(v);
+
+			if (dominados.addAll(vizinhos)) {
+				dominante.add(v);
+			}else
+				dominados.add(v);
 		}
 		return dominante;
 	}
@@ -125,7 +154,7 @@ public class MinDominatingSet {
 	public static void main(String[] args) {
 
 		DirectedSocialNetwork g = new SocialNetworkGenerate().gerarGrafo(
-				100, 2.5);
+				5000, 2.5);
 
 		System.out.println("|V(G)| = " + g.vertexSet().size());
 		System.out.println("|E(G)| = " + g.edgeSet().size());
@@ -139,10 +168,10 @@ public class MinDominatingSet {
 		startTime = System.nanoTime();
 		HashSet<Actor> ds = (HashSet<Actor>) minDom.greedy(g);
 		System.out.println("Tempo: "+(System.nanoTime() - startTime)/1000);
-		System.out.println("|DS|- GreedyPlus: " + ds.size());
+		System.out.println("|DS|- vRegularGreedy: " + ds.size());
 		System.out.println("\nspread: "+g.espectedSpread(ds, true));
-		g.activate(ds);
-		g.visualize();
+//		g.activate(ds);
+//		g.visualize();
 		
 		startTime = System.nanoTime();
 		HashSet<Actor> ds2 = (HashSet<Actor>) minDom.regularGreedy(g);
@@ -159,13 +188,12 @@ public class MinDominatingSet {
 		HashSet<Actor> ds3 = minDom.fastGreedy(g);
 //		System.out.println("Tempo: "+(System.nanoTime() - startTime)/1000);
 		System.out.println("\n\n|DS|- FastGreedy: " + ds3.size());	
-		System.out.println("Vertices dominantes:");
 //		for (Actor v : ds3) {
 //			System.out.print(v.toString()+" ");
 //		}
 		System.out.println("\nspread: "+g.espectedSpread(ds3, true));
-		g.activate(ds3);
-		g.visualize();
+//		g.activate(ds3);
+//		g.visualize();
 		
 //		HashSet<Actor> seed = new LazyGreedy(g).escolher(ds3.size());
 //		System.out.println("\nVertices Influentes: "+seed.size());

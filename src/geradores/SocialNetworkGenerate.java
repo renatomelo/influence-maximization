@@ -20,6 +20,7 @@ import org.jgrapht.WeightedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
+import plot.Histograma;
 import util.ComponentesConexos;
 
 public class SocialNetworkGenerate {
@@ -62,6 +63,18 @@ public class SocialNetworkGenerate {
 		for (Actor v : g.vertexSet()) {
 			v.setThreshold(Math.random());
 		}
+
+		return g;
+	}
+	
+	public DirectedSocialNetwork gerarGrafoInteiro(int n, double beta,
+			boolean direcionado, boolean comPeso) {
+
+		WeightedGraph<Actor, DefaultWeightedEdge> grafo;
+		grafo = new GeradorGrafoPowerLaw().gerarComPesos(n, beta,
+				direcionado);
+
+		g = asDirectedSocialNetwork(grafo);
 
 		return g;
 	}
@@ -114,5 +127,17 @@ public class SocialNetworkGenerate {
 
 		return sn;
 	}
-
+	
+	public static void main(String[] args) {
+//		DirectedSocialNetwork g = new SocialNetworkGenerate().gerarGrafo(50000, 2.5);
+		DirectedSocialNetwork g = new SocialNetworkGenerate().gerarGrafoInteiro(30000, 2.5, true, true);
+		System.out.println("|V(G)|"+g.vertexSet().size());
+		System.out.println("|E(G)|"+g.edgeSet().size());
+		Histograma histograma = new Histograma();
+		try {
+			histograma.plotarGraficos(histograma.gerarHistograma(g));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }

@@ -63,7 +63,7 @@ public class GraphReader {
 						DefaultWeightedEdge e;
 						e = g.addEdge(vertices[v1], vertices[v2]);
 						if (e != null) {
-							g.setEdgeWeight(e, trivalencyModel());
+							g.setEdgeWeight(e, peso());
 						}
 					}
 				}
@@ -79,18 +79,17 @@ public class GraphReader {
 
 	/**
 	 * Sorteia um valor aleatório
-	 * 
-	 * @return um número entre {0.2, 0.04, 0.008}
 	 */
-	public double trivalencyModel() {
+	public double peso() {
 
 		// int p = (int) (Math.random() * 3);
 		// double[] choice = { 0.2, 0.04, 0.008 };
 		// return choice[p];
 
 		// uniform IC model
-		 return (double)10/100;
-//		return Math.random();
+//		 return (double)10/100;
+//		return 0.025;
+		return Math.random()/4;
 	}
 
 	public DirectedSocialNetwork readEpinions() {

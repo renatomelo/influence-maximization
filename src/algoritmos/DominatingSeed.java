@@ -31,6 +31,7 @@ public class DominatingSeed implements SeedChooser<Actor> {
 
 		MinDominatingSet ds = new MinDominatingSet();
 		minSet = ds.fastGreedy(grafo);
+
 		System.out.println("|DS| = " + minSet.size());
 		if (minSet.size() < k) {
 			System.out.println("Erro: o cojunto domintante é menor que K");
@@ -66,7 +67,50 @@ public class DominatingSeed implements SeedChooser<Actor> {
 
 		return semente;
 	}
-	
+
+	public HashSet<Actor> escolher2(int k) {
+		HashSet<Actor> semente = new HashSet<Actor>();
+		HashSet<Actor> minSet = new HashSet<Actor>();
+
+		MinDominatingSet ds = new MinDominatingSet();
+		minSet = ds.fastGreedy2(grafo);
+
+		System.out.println("|DS| = " + minSet.size());
+		if (minSet.size() < k) {
+			System.out.println("Erro: o cojunto domintante é menor que K");
+			return null;
+		}
+
+		// create priority queue of all nodes, with marginal gain delta +inf
+		PriorityQueue<MarginalGain> fila = priorityQueueOfGains(minSet);
+
+		double MaxSpread = 0;
+
+		while (semente.size() < k) {
+			// set all gains invalid
+			for (MarginalGain mg : fila) {
+				mg.setValid(false);
+			}
+
+			while (true) {
+				MarginalGain max = fila.poll();
+				if (max.isValid() == true) {
+					semente.add(max.getVertice());
+					MaxSpread = MaxSpread + max.getGain();
+					break;
+				} else {
+					double sigma = cascata(max.getVertice(), semente);
+					double delta = sigma - MaxSpread;
+					max.setGain(delta);
+					max.setValid(true);
+					fila.add(max);
+				}
+			}
+		}
+
+		return semente;
+	}
+
 	public HashSet<Actor> escolherGreedy(int k) {
 		HashSet<Actor> semente = new HashSet<Actor>();
 		HashSet<Actor> minSet = new HashSet<Actor>();
@@ -120,7 +164,7 @@ public class DominatingSeed implements SeedChooser<Actor> {
 			vertices[i++] = a;
 
 		Random rand = new Random();
-		while (rSet.size() < vSet.size()/4) {
+		while (rSet.size() < vSet.size() / 3) {
 			rSet.add(vertices[rand.nextInt(vertices.length)]);
 		}
 
@@ -183,31 +227,36 @@ public class DominatingSeed implements SeedChooser<Actor> {
 	}
 
 	public static void main(String[] args) {
-		DirectedSocialNetwork g = new SocialNetworkGenerate()
-				.gerarGrafo(800, 2.5);
-		HashSet<Actor> seed = new DominatingSeed(g).escolherGreedy(15);
-		
-		 HashSet<Actor> ativos = g.indepCascadeDiffusion(seed);
+		DirectedSocialNetwork g = new SocialNetworkGenerate().gerarGrafo(2000,
+				2.5);
+		long startTime = 0;
+		startTime = System.nanoTime();
+		HashSet<Actor> seed = new DominatingSeed(g).escolher2(15);
+		System.out.println("Tempo: " + (System.nanoTime() - startTime) / 1000);
+
+		HashSet<Actor> ativos = g.indepCascadeDiffusion(seed);
 		System.out.println("|V(G)| = " + g.vertexSet().size());
-		System.out.println("|S| = " + seed.size());
-		 System.out.println("|A| = "+ativos.size());
-		 g.deactivate(ativos);
-//		g.activate(seed);
-//		g.visualize();
-		 
-		 HashSet<Actor> seed2 = new DominatingSeed(g).escolher(15);
-			
-		 HashSet<Actor> ativos2 = g.indepCascadeDiffusion(seed2);
-		System.out.println("\n|S| = " + seed2.size());
-		 System.out.println("|A| = "+ativos2.size());
-		 g.deactivate(ativos2);
-		 
-		 HashSet<Actor> seed3 = new DominatingSeed(g).escolherRandom(15);
-			
-		 HashSet<Actor> ativos3 = g.indepCascadeDiffusion(seed3);
-		System.out.println("\n|S| = " + seed3.size());
-		 System.out.println("|A| = "+ativos3.size());
-		 
+		// System.out.println("|S| = " + seed.size());
+		System.out.println("|A| = " + ativos.size());
+		g.deactivate(ativos);
+		// g.activate(seed);
+		// g.visualize();
+
+		startTime = System.nanoTime();
+		HashSet<Actor> seed2 = new DominatingSeed(g).escolher(15);
+		System.out.println("Tempo: " + (System.nanoTime() - startTime) / 1000);
+
+		HashSet<Actor> ativos2 = g.indepCascadeDiffusion(seed2);
+//		System.out.println("\n|S| = " + seed2.size());
+		System.out.println("|A| = " + ativos2.size());
+		g.deactivate(ativos2);
+
+//		 HashSet<Actor> seed3 = new DominatingSeed(g).escolherRandom(15);
+//		
+//		 HashSet<Actor> ativos3 = g.indepCascadeDiffusion(seed3);
+////		 System.out.println("\n|S| = " + seed3.size());
+//		 System.out.println("|A| = "+ativos3.size());
+		
 	}
 
 }
