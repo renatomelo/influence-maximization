@@ -186,7 +186,7 @@ public class DirectedSocialNetwork extends
 	public double espectedSpread(HashSet<Actor> seed, boolean ic) {
 		double media = 0;
 		int soma = 0;
-		int repeticoes = 10000;
+		int repeticoes = 5000;
 
 		if (!ic) {
 			HashSet<Actor> ativados = linearThresholdDiffusion(seed);
@@ -243,6 +243,7 @@ public class DirectedSocialNetwork extends
 
 		while (escolhidos.size() < k) {
 			Actor maior = heapMinMax.removeLast();
+			System.out.print(maior+"; ");
 			escolhidos.add(maior);
 		}
 
@@ -327,29 +328,32 @@ public class DirectedSocialNetwork extends
 		DirectedSocialNetwork g = new DirectedSocialNetwork(
 				DefaultWeightedEdge.class);
 
-		g = new SocialNetworkGenerate().gerarGrafo(40, 2);
+		g = new SocialNetworkGenerate().gerarGrafo(30, 2);
 
-		HashSet<Actor> seed = new HashSet<>();
-
-		Set<Actor> vertices = g.vertexSet();
-		for (Actor actor : vertices) {
-			if (seed.size() < 5) {
-				seed.add(actor);
-			}
-
-		}
-		
+//		HashSet<Actor> seed = new HashSet<>();
+//
+//		Set<Actor> vertices = g.vertexSet();
+//		for (Actor actor : vertices) {
+//			if (seed.size() < 5) {
+//				seed.add(actor);
+//			}
+//
+//		}
+//		
 		System.out.println("|V(G)| = " + g.vertexSet().size());
 		System.out.println("|E(G)| = " + g.edgeSet().size());
-		System.out.println("Seed:");
-		for (Actor a : seed) {
-			System.out.println(a.toString());
-		}
-
-		System.out.println("Difusão média no modelo IC = "+g.espectedSpread(seed, true));
-		System.out.println("Difusão média no modelo LT = "+g.espectedSpread(seed, false));
+		System.out.println("Q: ");
+		Set<Actor> Q = g.verticesGrauMaior(g.vertexSet(), g.vertexSet().size());
+		System.out.println();
+//		System.out.println("Seed:");
+//		for (Actor a : seed) {
+//			System.out.println(a.toString());
+//		}
+//
+//		System.out.println("Difusão média no modelo IC = "+g.espectedSpread(seed, true));
+//		System.out.println("Difusão média no modelo LT = "+g.espectedSpread(seed, false));
 		
 //		g.activate(seed);
-//		g.visualize();
+		g.visualize();
 	}
 }

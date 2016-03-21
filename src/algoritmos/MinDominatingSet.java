@@ -88,7 +88,7 @@ public class MinDominatingSet {
 	}
 
 	/**
-	 * Está errado, tem que olhar melhor a questão da direção das arestas
+	 * Com grafo direcionado não retorna um conjunto dominante, mas é um bom cojunto de vértices influentes
 	 **/
 	
 	public HashSet<Actor> fastGreedy(DirectedSocialNetwork grafo) {

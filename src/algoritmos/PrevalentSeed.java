@@ -5,6 +5,10 @@ import java.util.PriorityQueue;
 import java.util.Random;
 import java.util.Set;
 
+import util.ComparaPorGrau;
+
+import com.google.common.collect.MinMaxPriorityQueue;
+
 import algoritmos.MarginalGain;
 import geradores.SocialNetworkGenerate;
 import grafos.Actor;
@@ -13,33 +17,61 @@ import interfaces.SeedChooser;
 
 /*De acordo com os experimentos, utilizando o CELF como subrotina
  *  dentro do conjunto dominante obtem-se um resultado semelhante 
- *  ao CELF original, o que leva a crer sãio fortes indicativos de
+ *  ao CELF original, o que leva a crer são fortes indicativos de
  *  que os vértices "bons" estão dentro do conjunto dominante minimo
  *  num grafo direcionado
  */
-public class DominatingSeed implements SeedChooser<Actor> {
+public class PrevalentSeed implements SeedChooser<Actor> {
 	private DirectedSocialNetwork grafo;
 
-	public DominatingSeed(DirectedSocialNetwork g) {
+	public PrevalentSeed(DirectedSocialNetwork g) {
 		this.grafo = g;
+	}
+	
+	public HashSet<Actor> preSelecao(DirectedSocialNetwork grafo) {
+		int n = grafo.vertexSet().size();
+
+		// DS <-- {}
+		HashSet<Actor> candidatos = new HashSet<>();
+
+		// compare os vertices pelo grau
+		ComparaPorGrau comp = new ComparaPorGrau(grafo);
+
+		MinMaxPriorityQueue<Actor> heapMinMax = null;
+		heapMinMax = MinMaxPriorityQueue.orderedBy(comp).maximumSize(n)
+				.create();
+		for (Actor v : grafo.vertexSet()) {
+			heapMinMax.add(v);
+		}
+
+		Set<Actor> cobertos = new HashSet<>();
+		while (cobertos.size() < n) {
+			
+			Actor v = heapMinMax.removeLast();
+			Set<Actor> vizinhos = grafo.outNeighborsOf(v);
+
+			if (cobertos.addAll(vizinhos)) {
+				candidatos.add(v);
+			}
+			cobertos.add(v);
+		}
+		return candidatos;
 	}
 
 	@Override
 	public HashSet<Actor> escolher(int k) {
 		HashSet<Actor> semente = new HashSet<Actor>();
-		HashSet<Actor> minSet = new HashSet<Actor>();
+		HashSet<Actor> candidatos = new HashSet<Actor>();
 
-		MinDominatingSet ds = new MinDominatingSet();
-		minSet = ds.fastGreedy(grafo);
+		candidatos = preSelecao(grafo);
 
-		System.out.println("|DS| = " + minSet.size());
-		if (minSet.size() < k) {
-			System.out.println("Erro: o cojunto domintante é menor que K");
+		if (candidatos.size() < k) {
+			System.out.println("Erro: o cojunto de candidatos é menor que K");
 			return null;
 		}
 
 		// create priority queue of all nodes, with marginal gain delta +inf
-		PriorityQueue<MarginalGain> fila = priorityQueueOfGains(minSet);
+		PriorityQueue<MarginalGain> fila = priorityQueueOfGains(candidatos);
 
 		double MaxSpread = 0;
 
@@ -231,7 +263,7 @@ public class DominatingSeed implements SeedChooser<Actor> {
 				2.5);
 		long startTime = 0;
 		startTime = System.nanoTime();
-		HashSet<Actor> seed = new DominatingSeed(g).escolher2(15);
+		HashSet<Actor> seed = new PrevalentSeed(g).escolher2(15);
 		System.out.println("Tempo: " + (System.nanoTime() - startTime) / 1000);
 
 		HashSet<Actor> ativos = g.indepCascadeDiffusion(seed);
@@ -243,7 +275,7 @@ public class DominatingSeed implements SeedChooser<Actor> {
 		// g.visualize();
 
 		startTime = System.nanoTime();
-		HashSet<Actor> seed2 = new DominatingSeed(g).escolher(15);
+		HashSet<Actor> seed2 = new PrevalentSeed(g).escolher(15);
 		System.out.println("Tempo: " + (System.nanoTime() - startTime) / 1000);
 
 		HashSet<Actor> ativos2 = g.indepCascadeDiffusion(seed2);
