@@ -57,13 +57,43 @@ public class PrevalentSeed implements SeedChooser<Actor> {
 		}
 		return candidatos;
 	}
+	
+	public HashSet<Actor> preSelecaoOriginal(DirectedSocialNetwork grafo) {
+		int n = grafo.vertexSet().size();
+
+		// DS <-- {}
+		HashSet<Actor> candidatos = new HashSet<>();
+
+		// compare os vertices pelo grau
+		ComparaPorGrau comp = new ComparaPorGrau(grafo);
+
+		MinMaxPriorityQueue<Actor> heapMinMax = null;
+		heapMinMax = MinMaxPriorityQueue.orderedBy(comp).maximumSize(n)
+				.create();
+		for (Actor v : grafo.vertexSet()) {
+			heapMinMax.add(v);
+		}
+
+		Set<Actor> cobertos = new HashSet<>();
+		while (!heapMinMax.isEmpty()) {
+			
+			Actor v = heapMinMax.removeLast();
+			Set<Actor> vizinhos = grafo.outNeighborsOf(v);
+
+			if (cobertos.addAll(vizinhos)) {
+				candidatos.add(v);
+			}
+			cobertos.add(v);
+		}
+		return candidatos;
+	}
 
 	@Override
 	public HashSet<Actor> escolher(int k) {
 		HashSet<Actor> semente = new HashSet<Actor>();
 		HashSet<Actor> candidatos = new HashSet<Actor>();
 
-		candidatos = preSelecao(grafo);
+		candidatos = preSelecaoOriginal(grafo);
 
 		if (candidatos.size() < k) {
 			System.out.println("Erro: o cojunto de candidatos é menor que K");

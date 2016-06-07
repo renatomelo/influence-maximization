@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 
-import javax.media.j3d.PhysicalBody;
+//import javax.media.j3d.PhysicalBody;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
@@ -13,7 +13,7 @@ import plot.MeuPlot;
 import readgraph.GraphReader;
 import algoritmos.ArticulationSeed;
 import algoritmos.BestNeighbors;
-import algoritmos.DominatingSeed;
+import algoritmos.PrevalentSeed;
 import algoritmos.HightDegree;
 import algoritmos.LazyGreedy;
 import algoritmos.OriginalGreedy;
@@ -38,7 +38,7 @@ public class Simulacao {
 			System.out.println("\nTestando para k = " + k);
 
 			excutionTime = System.currentTimeMillis() * -1;
-			HashSet<Actor> seed1 = new DominatingSeed(g).escolher(k);
+			HashSet<Actor> seed1 = new PrevalentSeed(g).escolher(k);
 			excutionTime += System.currentTimeMillis();
 			tempo1[i] = (excutionTime / 1000.0f);
 			sigma1[i] = g.espectedSpread(seed1, true);
@@ -105,7 +105,7 @@ public class Simulacao {
 				System.out.println("\nTestando para k = " + k);
 
 				excutionTime = System.currentTimeMillis() * -1;
-				HashSet<Actor> seed1 = new DominatingSeed(g).escolher(k);
+				HashSet<Actor> seed1 = new PrevalentSeed(g).escolher(k);
 				excutionTime += System.currentTimeMillis();
 				tempo1[i] = (excutionTime / 1000.0f);
 				sigma1[i] = g.espectedSpread(seed1, true);
@@ -125,7 +125,7 @@ public class Simulacao {
 				stempo2[i] += tempo2[i];*/
 				
 				excutionTime = System.currentTimeMillis() * -1;
-				HashSet<Actor> seed2 = new DominatingSeed(g).escolher2(k);
+				HashSet<Actor> seed2 = new PrevalentSeed(g).escolher2(k);
 				excutionTime += System.currentTimeMillis();
 				tempo2[i] = (excutionTime / 1000.0f);
 				sigma2[i] = g.espectedSpread(seed2, true);
@@ -241,10 +241,10 @@ public class Simulacao {
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		Date data = new Date();
 		System.out.println("Data de início: " + dateFormat.format(data));
-		simularArtificial();
-		 simularPhy();
-//		 simularEpinions();
-		 simularHep();
+//		simularArtificial();
+//		 simularPhy();
+		 simularEpinions();
+//		 simularHep();
 //		 simularDblp();
 	}
 

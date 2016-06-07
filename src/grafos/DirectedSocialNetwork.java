@@ -186,7 +186,7 @@ public class DirectedSocialNetwork extends
 	public double espectedSpread(HashSet<Actor> seed, boolean ic) {
 		double media = 0;
 		int soma = 0;
-		int repeticoes = 5000;
+		int repeticoes = 500;
 
 		if (!ic) {
 			HashSet<Actor> ativados = linearThresholdDiffusion(seed);
