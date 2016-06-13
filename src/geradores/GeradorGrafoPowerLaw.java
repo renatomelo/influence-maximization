@@ -43,7 +43,7 @@ public class GeradorGrafoPowerLaw {
 			boolean direcionado) {
 		//Devido a futura remoção dos vertices isolados
 		if (direcionado) {
-			n = (int) (n + n * 0.7);
+			n = (int) (n + n * 0.3);
 		}else
 			n = (int) (n + n * 0.5);
 		
@@ -135,7 +135,7 @@ public class GeradorGrafoPowerLaw {
 			int n, double beta, boolean direcionado) {
 		
 		if (direcionado) {
-			n = (int) (n + n * 0.65);
+			n = (int) (n + n * 0.13);
 		}else
 			n = (int) (n + n * 0.5);
 

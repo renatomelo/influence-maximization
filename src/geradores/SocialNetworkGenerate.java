@@ -31,7 +31,8 @@ public class SocialNetworkGenerate {
 		boolean direcionado = true;
 		boolean comPeso = true;
 
-		return gerarModeloLT(n, beta, direcionado, comPeso);
+//		return gerarModeloLT(n, beta, direcionado, comPeso);
+		return gerarGrafoInteiro(n, beta, direcionado, comPeso);
 	}
 
 	// Por padrão a rede resultante é direcionada e com pesos
@@ -130,7 +131,7 @@ public class SocialNetworkGenerate {
 	
 	public static void main(String[] args) {
 //		DirectedSocialNetwork g = new SocialNetworkGenerate().gerarGrafo(50000, 2.5);
-		DirectedSocialNetwork g = new SocialNetworkGenerate().gerarGrafoInteiro(30000, 2.5, true, true);
+		DirectedSocialNetwork g = new SocialNetworkGenerate().gerarGrafoInteiro(50000, 2.5, true, true);
 		System.out.println("|V(G)|"+g.vertexSet().size());
 		System.out.println("|E(G)|"+g.edgeSet().size());
 		Histograma histograma = new Histograma();

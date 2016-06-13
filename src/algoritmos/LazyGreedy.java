@@ -5,11 +5,17 @@ import grafos.Actor;
 import grafos.DirectedSocialNetwork;
 import interfaces.SeedChooser;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.PriorityQueue;
 
 public class LazyGreedy implements SeedChooser<Actor> {
 	private DirectedSocialNetwork grafo = null;
+	private int cont;
+	private double[] spreadData;
+	private double[] callData;
+	
 
 	public LazyGreedy(DirectedSocialNetwork g) {
 		this.grafo = g;
@@ -35,6 +41,9 @@ public class LazyGreedy implements SeedChooser<Actor> {
 	@Override
 	public HashSet<Actor> escolher(int k) {
 		HashSet<Actor> semente = new HashSet<>();
+		cont = 0;
+		spreadData = new double[k+1];
+		callData = new double[k+1];
 
 		// create priority queue of all nodes, with marginal gain delta +inf
 		PriorityQueue<MarginalGain> fila = priorityQueueOfGains();
@@ -52,6 +61,9 @@ public class LazyGreedy implements SeedChooser<Actor> {
 				if (max.isValid() == true) {
 					semente.add(max.getVertice());
 					MaxSpread = MaxSpread + max.getGain();
+//					System.out.println(semente.size()+"\t"+MaxSpread);
+					spreadData[semente.size()] = MaxSpread;
+					callData[semente.size()] = cont;
 					break;
 				} else {
 					double sigma = cascata(max.getVertice(), semente);
@@ -59,11 +71,58 @@ public class LazyGreedy implements SeedChooser<Actor> {
 					max.setGain(delta);
 					max.setValid(true);
 					fila.add(max);
+					cont++;
 				}
 			}
-//			System.out.println("spread: " + MaxSpread);
 		}
+		System.out.println("chamadas: " + cont);
+		return semente;
+	}
+	
+	public int callToSigma(){
+		return this.cont;
+	}
+	public double[] getSpreadData(){
+		return this.spreadData;
+	}
+	
+	public double[] getCallData(){
+		return this.callData;
+	}
+	
+	public HashSet<Actor> toFile(int k, FileWriter writer) throws IOException {
+		HashSet<Actor> semente = new HashSet<>();
+		cont = 0;
 
+		// create priority queue of all nodes, with marginal gain delta +inf
+		PriorityQueue<MarginalGain> fila = priorityQueueOfGains();
+
+		double MaxSpread = 0; 
+
+		while (semente.size() < k) {
+			// set all gains invalid
+			for (MarginalGain mg : fila) {
+				mg.setValid(false);
+			}
+
+			while (true) {
+				MarginalGain max = fila.poll();
+				if (max.isValid() == true) {
+					semente.add(max.getVertice());
+					MaxSpread = MaxSpread + max.getGain();
+					writer.write(semente.size()+"\t"+MaxSpread);
+					break;
+				} else {
+					double sigma = cascata(max.getVertice(), semente);
+					double delta = sigma - MaxSpread;
+					max.setGain(delta);
+					max.setValid(true);
+					fila.add(max);
+					cont++;
+				}
+			}
+		}
+//		System.out.println("chamadas: " + cont);
 		return semente;
 	}
 
@@ -76,7 +135,7 @@ public class LazyGreedy implements SeedChooser<Actor> {
 
 	public static void main(String[] args) {
 		DirectedSocialNetwork g;
-		g = new SocialNetworkGenerate().gerarGrafo(500, 2.8);
+		g = new SocialNetworkGenerate().gerarGrafo(2000, 2.5);
 		long startTime = 0;
 
 		startTime = System.nanoTime();

@@ -17,15 +17,17 @@ import interfaces.SeedChooser;
 public class HightDegree implements SeedChooser<Actor> {
 
 	public DirectedSocialNetwork grafo = null;
+	private double[] spreadData; // histograma da propagação esperada
 
-	public HightDegree(DirectedSocialNetwork grafo) {
+	public HightDegree(DirectedSocialNetwork g) {
 		super();
-		this.grafo = grafo;
+		this.grafo = g;
 	}
 
 	@Override
 	public HashSet<Actor> escolher(int k) {
 		HashSet<Actor> semente = new HashSet<>();
+		spreadData = new double[k+1];
 
 		Set<Actor> vSet = grafo.vertexSet();
 
@@ -43,8 +45,13 @@ public class HightDegree implements SeedChooser<Actor> {
 		while (semente.size() < k) {
 			Actor maior = heapMinMax.removeLast();
 			semente.add(maior);
+			spreadData[semente.size()] = grafo.espectedSpread(semente, true);
 		}
 		return semente;
+	}
+	
+	public double[] getSpreadData(){
+		return this.spreadData;
 	}
 
 	public static void main(String[] args) {

@@ -84,7 +84,7 @@ public class Simulacao {
 		double[] sigma2 = new double[5], tempo2 = new double[5];
 		double[] sigma3 = new double[5], tempo3 = new double[5];
 		double[] sigma4 = new double[5], tempo4 = new double[5];
-		int k, repeticoes = 10;
+		int k, repeticoes = 1;
 
 		double[] ssigma1 = new double[5], stempo1 = new double[5];
 		double[] ssigma2 = new double[5], stempo2 = new double[5];
@@ -109,12 +109,12 @@ public class Simulacao {
 				excutionTime += System.currentTimeMillis();
 				tempo1[i] = (excutionTime / 1000.0f);
 				sigma1[i] = g.espectedSpread(seed1, true);
-				System.out.println("DominatingSeed: sigma  = " + sigma1[i]
+				System.out.println("PrevalentSeed: sigma  = " + sigma1[i]
 						+ ", tempo = " + tempo1[i] + " segundos");
 				ssigma1[i] += sigma1[i];
 				stempo1[i] += tempo1[i];
 
-				/*excutionTime = System.currentTimeMillis() * -1;
+				excutionTime = System.currentTimeMillis() * -1;
 				HashSet<Actor> seed2 = new LazyGreedy(g).escolher(k);
 				excutionTime += System.currentTimeMillis();
 				tempo2[i] = (excutionTime / 1000.0f);
@@ -122,17 +122,17 @@ public class Simulacao {
 				System.out.println("LazyGreedy: sigma = " + sigma2[i]
 						+ ", tempo = " + tempo2[i] + " segundos");
 				ssigma2[i] += sigma2[i];
-				stempo2[i] += tempo2[i];*/
-				
-				excutionTime = System.currentTimeMillis() * -1;
-				HashSet<Actor> seed2 = new PrevalentSeed(g).escolher2(k);
-				excutionTime += System.currentTimeMillis();
-				tempo2[i] = (excutionTime / 1000.0f);
-				sigma2[i] = g.espectedSpread(seed2, true);
-				System.out.println("preSelect: sigma = " + sigma2[i]
-						+ ", tempo = " + tempo2[i] + " segundos");
-				ssigma2[i] += sigma2[i];
 				stempo2[i] += tempo2[i];
+				
+//				excutionTime = System.currentTimeMillis() * -1;
+//				HashSet<Actor> seed2 = new PrevalentSeed(g).escolher2(k);
+//				excutionTime += System.currentTimeMillis();
+//				tempo2[i] = (excutionTime / 1000.0f);
+//				sigma2[i] = g.espectedSpread(seed2, true);
+//				System.out.println("preSelecaoOriginal: sigma = " + sigma2[i]
+//						+ ", tempo = " + tempo2[i] + " segundos");
+//				ssigma2[i] += sigma2[i];
+//				stempo2[i] += tempo2[i];
 
 				excutionTime = System.currentTimeMillis() * -1;
 				HashSet<Actor> seed3 = new HightDegree(g).escolher(k);
@@ -229,7 +229,7 @@ public class Simulacao {
 	private static void simularArtificial() {
 		int i = 2;
 		
-		while (i <= 4) {
+		while (i <= 64) {
 			String outDir = "'plots/rand/"+i+"/";
 			simularRandomGraphIC(i, outDir);
 			System.out.println("\t----------");
@@ -241,9 +241,9 @@ public class Simulacao {
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		Date data = new Date();
 		System.out.println("Data de início: " + dateFormat.format(data));
-//		simularArtificial();
+		simularArtificial();
 //		 simularPhy();
-		 simularEpinions();
+//		 simularEpinions();
 //		 simularHep();
 //		 simularDblp();
 	}

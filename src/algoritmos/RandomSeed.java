@@ -13,9 +13,10 @@ import grafos.DirectedSocialNetwork;
 import interfaces.SeedChooser;
 
 public class RandomSeed implements SeedChooser<Actor>{
-	public Graph<Actor, DefaultWeightedEdge> grafo;
+	public DirectedSocialNetwork grafo = null;
+	private double[] spreadData; // histograma da propagação esperada
 
-	public RandomSeed(Graph<Actor, DefaultWeightedEdge> grafo) {
+	public RandomSeed(DirectedSocialNetwork grafo) {
 		this.grafo = grafo;
 	}
 
@@ -23,6 +24,7 @@ public class RandomSeed implements SeedChooser<Actor>{
 	public HashSet<Actor> escolher(int k) {		
 		HashSet<Actor> semente = new HashSet<>();		
 		Set<Actor> vSet = grafo.vertexSet();
+		spreadData = new double[k+1];
 
 		Actor[] vertices = new Actor[vSet.size()];
 		int i = 0;
@@ -34,11 +36,16 @@ public class RandomSeed implements SeedChooser<Actor>{
 		while (semente.size() < k) {
 			if (!semente.contains(sorteado)) {
 				semente.add(sorteado);
+				spreadData[semente.size()] = grafo.espectedSpread(semente, true);
 			}
 			sorteado = vertices[rand.nextInt(vertices.length)];
 		}
 
 		return semente;
+	}
+	
+	public double[] getSpreadData(){
+		return this.spreadData;
 	}
 	
 	public static void main(String[] args) {
