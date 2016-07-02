@@ -61,9 +61,9 @@ public class LazyGreedy implements SeedChooser<Actor> {
 				if (max.isValid() == true) {
 					semente.add(max.getVertice());
 					MaxSpread = MaxSpread + max.getGain();
-//					System.out.println(semente.size()+"\t"+MaxSpread);
+					System.out.println(semente.size()+"\t"+MaxSpread);
 					spreadData[semente.size()] = MaxSpread;
-					callData[semente.size()] = cont;
+//					callData[semente.size()] = cont;
 					break;
 				} else {
 					double sigma = cascata(max.getVertice(), semente);

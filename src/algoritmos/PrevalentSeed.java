@@ -123,8 +123,8 @@ public class PrevalentSeed implements SeedChooser<Actor> {
 				if (max.isValid() == true) {
 					semente.add(max.getVertice());
 					maxSpread = maxSpread + max.getGain();
-//					System.out.println(semente.size()+"\t"+maxSpread);
-					callData[semente.size()] = cont;
+					System.out.println(semente.size()+"\t"+maxSpread);
+//					callData[semente.size()] = cont;
 					spreadData[semente.size()] = maxSpread;
 					break;
 				} else {
