@@ -72,8 +72,7 @@ public class Simulacao {
 		}
 
 		MeuPlot meuplot = new MeuPlot();
-		meuplot.plotPropagacao(tamSemente, sigma1, sigma2, sigma3, sigma4,
-				outDir);
+//		meuplot.plotPropagacao(tamSemente, sigma1, sigma2, sigma3, sigma4,outDir);
 		meuplot.plotTempoExecucao(tamSemente, tempo1, tempo2, tempo3, tempo4,
 				outDir);
 	}
@@ -170,8 +169,7 @@ public class Simulacao {
 		}
 
 		MeuPlot meuplot = new MeuPlot();
-		meuplot.plotPropagacao(tamSemente, sigma1, sigma2, sigma3, sigma4,
-				outDir);
+//		meuplot.plotPropagacao(tamSemente, sigma1, sigma2, sigma3, sigma4,outDir);
 		meuplot.plotTempoExecucao(tamSemente, tempo1, tempo2, tempo3, tempo4,
 				outDir);
 	}

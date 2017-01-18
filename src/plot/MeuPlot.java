@@ -65,10 +65,10 @@ public class MeuPlot extends JGnuplot {
 		String saida = outDir+"propagacao_esperada.plt";
 		plot.compile(plotPropagacao, plot.plot2d, saida);
 		
-//		this.terminal = "epslatex color colortext dashed";
-//		this.output = outDir+"propagacao.tex'";
-		this.terminal = "eps color dashed";
-		this.output = outDir+"propagacao.eps";
+		this.terminal = "epslatex color colortext dashed";
+		this.output = outDir+"propagacao.tex";
+//		this.terminal = "eps color dashed";
+//		this.output = outDir+"propagacao.eps";
 		this.execute(plotPropagacao, this.plot2d);
 	}
 	
@@ -85,7 +85,23 @@ public class MeuPlot extends JGnuplot {
 		return x2;
 	}
 
-	public void plotChamadas(double[] y1, double[] y2, String outDir){
+	public void plotTime(double timePS, double timeCelf, double timeHD, double timeRS, String outDir){
+        JGnuplot jg = new JGnuplot();
+        Plot plot = new Plot("") {
+            {
+                xlabel = "x";
+                ylabel = "y";
+                extra2 = "set key top left";
+            }
+        };
+        double[] x = { 1, 2, 3, 4, 5 }, y1 = {}, y2 = {};
+        DataTableSet dts = plot.addNewDataTableSet("2D Bar");
+        DataTable dt = dts.addNewDataTable("", x, y1, y2);
+        dt.insert(0, new String[] { "", "y1=2x", "y2=3x" });
+        jg.execute(plot, jg.plot2dBar);
+	}
+	
+	public void plotChamadas( String outDir){
 	        JGnuplot jg = new JGnuplot();
 	        Plot plot = new Plot("") {
 	            {
@@ -95,7 +111,7 @@ public class MeuPlot extends JGnuplot {
 	                extra2 = "set key top left";
 	            }
 	        };
-	        double[] x = { 1, 2, 3, 4, 5 };
+	        double[] x = { 1, 2, 3, 4, 5 }, y1 = {}, y2 = {};
 	        DataTableSet dts = plot.addNewDataTableSet("2D Bar");
 	        DataTable dt = dts.addNewDataTable("", x, y1, y2);
 	        dt.insert(0, new String[] { "", "y1=2x", "y2=3x" });

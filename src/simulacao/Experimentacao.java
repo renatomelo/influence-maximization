@@ -18,18 +18,19 @@ import readgraph.GraphReader;
 public class Experimentacao {
 
 	public static void main(String[] args) {
-		int k = 30;
+		int k = 50;
 //		sinteticGraphSimulate(k);		
 		//Simulações a serem feita com probabilidade 0.01
-		simularHep(k);
-		simularPhy(k);		
-		simularAmazon(k);
-		simularDblp(k);
-		// Simulações a serem feita com probabilidade 0.0025
+//		System.out.println("Simulaçoes realizadas para p = 0.025");
+//		System.out.println("Grafos: HEP, PHY e DBLP");
+//		simularHep(k);
+//		simularPhy(k);		
+//		simularDblp(k);
+// 		Simulações a serem feita com probabilidade 0.0025
+		System.out.println("Simulaçoes realizadas para p = 0.0025");
+		System.out.println("Grafos: ENRON e EPINIONS");
 		simularEnron(k);
 		simularEpinions(k);
-		
-		
 	}
 	
 	private static void simularHep(int k) {
@@ -108,16 +109,33 @@ public class Experimentacao {
 
 	private static void monteCarloSimulation(DirectedSocialNetwork g, String out, int k) {
 		double[] spreadPS,spreadCelf, spreadHD, spreadRS;
+		double timePS, timeCelf, timeHD, timeRS;
 		double[] x;
+		long time = 0;
 
+//		Testa o celf
 		LazyGreedy celf = new LazyGreedy(g);
 		System.out.println("#Celf");
+		
+		time = System.currentTimeMillis() * -1;
 		celf.escolher(k);
+		time += System.currentTimeMillis();
+		
+		timeCelf = (time / 1000.0f);
+		System.out.println("Tempo: "+timeCelf);
 		spreadCelf = celf.getSpreadData();
 
+		
+//		Testa o PrevalentSeed
 		PrevalentSeed ps = new PrevalentSeed(g);
 		System.out.println("#PrevalentSeed");
+		
+		time = System.currentTimeMillis() * -1;
 		ps.escolher(k);
+		time += System.currentTimeMillis();
+		
+		timePS = (time / 1000.0f);
+		System.out.println("Tempo: "+timePS);
 		spreadPS = ps.getSpreadData();
 
 //		// Testa a heuristica de grau

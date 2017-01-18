@@ -47,7 +47,7 @@ public class GraphReader {
 					for (int i = 0; i < values[0]; i++) {
 						Actor v = new Actor(i);
 						//
-						v.setThreshold(Math.random());
+//						v.setThreshold(Math.random());
 						g.addVertex(v);
 						vertices[i] = v;
 					}
@@ -81,16 +81,15 @@ public class GraphReader {
 	 * Sorteia um valor aleatório
 	 */
 	public double peso() {
-
 		// int p = (int) (Math.random() * 3);
 		// double[] choice = { 0.2, 0.04, 0.008 };
 		// return choice[p];
 
 		// uniform IC model
-//		 return (double)10/100;
-//		return 0.025;
-		return Math.random()/4;
-//		return 0.0025;
+//		return (double)10/100;
+//		return 0.001;
+//		return Math.random()/4;
+		return 0.0025;
 	}
 
 	public DirectedSocialNetwork readEpinions() {
@@ -121,6 +120,20 @@ public class GraphReader {
 		return run(n, m, arquivo);
 	}
 
+	public DirectedSocialNetwork amazon() {
+		int n = 262111;
+		int m = 1234877;
+		String arquivo = "data/Amazon0302.txt";
+		return run(n, m, arquivo);
+	}
+	
+	public DirectedSocialNetwork enron() {
+		int n = 36692;
+		int m = 367662;
+		String arquivo = "data/enron.txt";
+		return run(n, m, arquivo);
+	}
+	
 	public DirectedSocialNetwork readDblp() {
 		int n = 654628;
 		int m = 1990259;
@@ -131,8 +144,11 @@ public class GraphReader {
 	public static void main(String args[]) {
 		GraphReader reader = new GraphReader();
 		DirectedSocialNetwork g;
-		g = reader.readEpinions();
-		// g = reader.readHep();
+//		g = reader.readDblp();
+//		g = reader.readEpinions();
+//		 g = reader.readHep();
+		g = reader.enron();
+//		g = reader.amazon(); // NÃO tem curva power law
 
 		Histograma histograma = new Histograma();
 
