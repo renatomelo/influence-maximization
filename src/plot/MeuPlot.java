@@ -10,38 +10,38 @@ public class MeuPlot extends JGnuplot {
 //	String output = null;
 //	String beforeStyle="linewidth=4";
 	
-//	public void plotPropagacao(double[] x, double[] y1, double[] y2, double[] y3, double[] y4, String outDir){
-//		double[] x2 = suavisalinhas(x);
-//		double[] z1 = suavisalinhas(y1);
-//		double[] z2 = suavisalinhas(y2);
-//		double[] z3 = suavisalinhas(y3);
-//		double[] z4 = suavisalinhas(y4);
-//		
-//		JGnuplot plot = new JGnuplot();
-//		Plot plotPropagacao = new Plot("Propagação Esperada") {
-//			{
-//				xlabel = "'|S|'";
-//				ylabel = "'sigma(S)'";
-//				extra = "set key top left";
-//			}
-//		};
-//		
-//		DataTableSet dts = plotPropagacao.addNewDataTableSet("Propagação Esperada");
-//		dts.addNewDataTable("PrevalentSeed", x2, z1);
-//		dts.addNewDataTable("CELF", x2, z2);
-//		dts.addNewDataTable("HighDegree", x2, z3);
-//		dts.addNewDataTable("RandomSeed", x2, z4);
-//		
-//		plotPropagacao.add(dts);
-//		String saida = outDir+"propagacao_esperada.plt";
-//		plot.compile(plotPropagacao, plot.plot2d, saida);
-//		
-////		this.terminal = "epslatex color colortext dashed";
-////		this.output = outDir+"propagacao.tex'";
-//		this.terminal = "eps color dashed";
-//		this.output = outDir+"propagacao.eps";
-//		this.execute(plotPropagacao, this.plot2d);
-//	}
+	public void plotPropagacao(double[] x, double[] y1, double[] y2, double[] y3, double[] y4, String outDir){
+		double[] x2 = suavisalinhas(x);
+		double[] z1 = suavisalinhas(y1);
+		double[] z2 = suavisalinhas(y2);
+		double[] z3 = suavisalinhas(y3);
+		double[] z4 = suavisalinhas(y4);
+		
+		JGnuplot plot = new JGnuplot();
+		Plot plotPropagacao = new Plot("Propagação Esperada") {
+			{
+				xlabel = "'|S|'";
+				ylabel = "'sigma(S)'";
+				extra = "set key top left";
+			}
+		};
+		
+		DataTableSet dts = plotPropagacao.addNewDataTableSet("Propagação Esperada");
+		dts.addNewDataTable("PrevalentSeed", x2, z1);
+		dts.addNewDataTable("CELF", x2, z2);
+		dts.addNewDataTable("HighDegree", x2, z3);
+		dts.addNewDataTable("RandomSeed", x2, z4);
+		
+		plotPropagacao.add(dts);
+		String saida = outDir+"propagacao_esperada.plt";
+		plot.compile(plotPropagacao, plot.plot2d, saida);
+		
+//		this.terminal = "epslatex color colortext dashed";
+//		this.output = outDir+"propagacao.tex'";
+		this.terminal = "eps color dashed";
+		this.output = outDir+"propagacao.eps";
+		this.execute(plotPropagacao, this.plot2d);
+	}
 	
 	public void plotPropagacao(double[] x, double[] y1, double[] y2, String outDir){
 		double[] x2 = suavisalinhas(x);

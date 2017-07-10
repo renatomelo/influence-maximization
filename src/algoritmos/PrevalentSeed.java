@@ -2,7 +2,6 @@ package algoritmos;
 
 import java.util.HashSet;
 import java.util.PriorityQueue;
-import java.util.Random;
 import java.util.Set;
 
 import util.ComparaPorGrau;
@@ -10,10 +9,10 @@ import util.ComparaPorGrau;
 import com.google.common.collect.MinMaxPriorityQueue;
 
 import algoritmos.MarginalGain;
-import geradores.SocialNetworkGenerate;
 import grafos.Actor;
 import grafos.DirectedSocialNetwork;
 import interfaces.SeedChooser;
+import readgraph.GraphReader;
 
 /*De acordo com os experimentos, utilizando o CELF como subrotina
  *  dentro do conjunto dominante obtem-se um resultado semelhante 
@@ -26,7 +25,6 @@ public class PrevalentSeed implements SeedChooser<Actor> {
 	private int cont; // número de chamadas a sigma
 	private double[] spreadData; // histograma da propagação esperada
 	private double[] callData;
-	
 
 	public PrevalentSeed(DirectedSocialNetwork g) {
 		this.grafo = g;
@@ -35,10 +33,9 @@ public class PrevalentSeed implements SeedChooser<Actor> {
 	public HashSet<Actor> preSelecao(DirectedSocialNetwork grafo) {
 		int n = grafo.vertexSet().size();
 
-		// DS <-- {}
 		HashSet<Actor> candidatos = new HashSet<>();
 
-		// compare os vertices pelo grau
+		// comparador de vertices pelo grau
 		ComparaPorGrau comp = new ComparaPorGrau(grafo);
 
 		MinMaxPriorityQueue<Actor> heapMinMax = null;
@@ -94,11 +91,11 @@ public class PrevalentSeed implements SeedChooser<Actor> {
 	public HashSet<Actor> escolher(int k) {
 		HashSet<Actor> semente = new HashSet<Actor>();
 		HashSet<Actor> candidatos = new HashSet<Actor>();
-		spreadData = new double[k+1];
-		callData = new double[k+1];
+		spreadData = new double[k + 1];
+		callData = new double[k + 1];
 
 		candidatos = preSelecaoOriginal(grafo);
-//		System.out.println("|C| = "+candidatos.size());
+		System.out.println("|C| = " + candidatos.size());
 
 		if (candidatos.size() < k) {
 			System.out.println("Erro: o cojunto de candidatos é menor que K");
@@ -123,8 +120,7 @@ public class PrevalentSeed implements SeedChooser<Actor> {
 				if (max.isValid() == true) {
 					semente.add(max.getVertice());
 					maxSpread = maxSpread + max.getGain();
-					System.out.println(semente.size()+"\t"+maxSpread);
-//					callData[semente.size()] = cont;
+//					System.out.println(semente.size() + "\t" + maxSpread);
 					spreadData[semente.size()] = maxSpread;
 					break;
 				} else {
@@ -137,70 +133,27 @@ public class PrevalentSeed implements SeedChooser<Actor> {
 				}
 			}
 		}
-		System.out.println("chamadas: "+cont);
+		System.out.println("Chamadas: " + cont);
+		System.out.println("Chamadas depois da 1a iteracao: " + (cont - candidatos.size()));
 		return semente;
 	}
-	
-	public int callToSigma(){
+
+	public int callToSigma() {
 		return this.cont;
 	}
-	public double[] getSpreadData(){
+
+	public double[] getSpreadData() {
 		return this.spreadData;
 	}
-	
-	public double[] getCallData(){
+
+	public double[] getCallData() {
 		return this.callData;
-	}
-	
-	public HashSet<Actor> toFile(int k) {
-		HashSet<Actor> semente = new HashSet<Actor>();
-		HashSet<Actor> candidatos = new HashSet<Actor>();
-		cont = 0;
-
-		candidatos = preSelecaoOriginal(grafo);
-//		System.out.println("|C| = "+candidatos.size());
-
-		if (candidatos.size() < k) {
-			System.out.println("Erro: o cojunto de candidatos é menor que K");
-			return null;
-		}
-
-		// create priority queue of all nodes, with marginal gain delta +inf
-		PriorityQueue<MarginalGain> fila = priorityQueueOfGains(candidatos);
-
-		double maxSpread = 0;
-
-		while (semente.size() < k) {
-			// set all gains invalid
-			for (MarginalGain mg : fila) {
-				mg.setValid(false);
-			}
-
-			while (true) {
-				MarginalGain max = fila.poll();
-				if (max.isValid() == true) {
-					semente.add(max.getVertice());
-					maxSpread = maxSpread + max.getGain();
-					System.out.println(semente.size()+"\t"+maxSpread);
-					break;
-				} else {
-					double sigma = cascata(max.getVertice(), semente);
-					double delta = sigma - maxSpread;
-					max.setGain(delta);
-					max.setValid(true);
-					fila.add(max);
-					cont++; // Conta o numero de chamadas à sigma
-				}
-			}
-		}
-		System.out.println("chamadas: "+cont);
-		return semente;
 	}
 
 	public HashSet<Actor> escolher2(int k) {
 		HashSet<Actor> semente = new HashSet<Actor>();
 		HashSet<Actor> minSet = new HashSet<Actor>();
-		cont=0;
+		cont = 0;
 
 		MinDominatingSet ds = new MinDominatingSet();
 		minSet = ds.fastGreedy2(grafo);
@@ -227,7 +180,7 @@ public class PrevalentSeed implements SeedChooser<Actor> {
 				if (max.isValid() == true) {
 					semente.add(max.getVertice());
 					MaxSpread = MaxSpread + max.getGain();
-					System.out.println("|S| = "+semente.size()+", |A| = "+MaxSpread);
+					System.out.println("|S| = " + semente.size() + ", |A| = " + MaxSpread);
 					break;
 				} else {
 					double sigma = cascata(max.getVertice(), semente);
@@ -239,7 +192,7 @@ public class PrevalentSeed implements SeedChooser<Actor> {
 				}
 			}
 		}
-		System.out.println("chamadas: "+cont);
+		System.out.println("chamadas: " + cont);
 		return semente;
 	}
 
@@ -313,35 +266,60 @@ public class PrevalentSeed implements SeedChooser<Actor> {
 	}
 
 	public static void main(String[] args) {
-		DirectedSocialNetwork g = new SocialNetworkGenerate().gerarGrafo(2000, 2.5);
-		System.out.println("|V(G)| = " + g.vertexSet().size());
-		long startTime = 0;
-		startTime = System.nanoTime();
-		HashSet<Actor> seed = new PrevalentSeed(g).escolher2(15);
-		System.out.println("Tempo: " + (System.nanoTime() - startTime) / 1000);
+		/*
+		 * DirectedSocialNetwork g = new
+		 * SocialNetworkGenerate().gerarGrafo(2000, 2.5);
+		 * System.out.println("|V(G)| = " + g.vertexSet().size()); long
+		 * startTime = 0; startTime = System.nanoTime(); HashSet<Actor> seed =
+		 * new PrevalentSeed(g).escolher2(15); System.out.println("Tempo: " +
+		 * (System.nanoTime() - startTime) / 1000);
+		 * 
+		 * HashSet<Actor> ativos = g.indepCascadeDiffusion(seed);
+		 * 
+		 * // System.out.println("|S| = " + seed.size());
+		 * System.out.println("|A| = " + ativos.size()); g.deactivate(ativos);
+		 * // g.activate(seed); // g.visualize();
+		 * 
+		 * startTime = System.nanoTime(); HashSet<Actor> seed2 = new
+		 * PrevalentSeed(g).escolher(15); System.out.println("Tempo: " +
+		 * (System.nanoTime() - startTime) / 1000);
+		 * 
+		 * HashSet<Actor> ativos2 = g.indepCascadeDiffusion(seed2); //
+		 * System.out.println("\n|S| = " + seed2.size());
+		 * System.out.println("|A| = " + ativos2.size()); g.deactivate(ativos2);
+		 * 
+		 * // HashSet<Actor> seed3 = new DominatingSeed(g).escolherRandom(15);
+		 * // // HashSet<Actor> ativos3 = g.indepCascadeDiffusion(seed3); ////
+		 * System.out.println("\n|S| = " + seed3.size()); //
+		 * System.out.println("|A| = "+ativos3.size());
+		 */
 
-		HashSet<Actor> ativos = g.indepCascadeDiffusion(seed);
-		
-		// System.out.println("|S| = " + seed.size());
-		System.out.println("|A| = " + ativos.size());
-		g.deactivate(ativos);
-		// g.activate(seed);
-		// g.visualize();
+		DirectedSocialNetwork g;
+		PrevalentSeed ps = new PrevalentSeed(null);
 
-		startTime = System.nanoTime();
-		HashSet<Actor> seed2 = new PrevalentSeed(g).escolher(15);
-		System.out.println("Tempo: " + (System.nanoTime() - startTime) / 1000);
+		System.out.println("enron.txt");
+		g = new GraphReader().enron();
+		System.out.println("|C| = " + ps.preSelecaoOriginal(g).size() + "\n");
 
-		HashSet<Actor> ativos2 = g.indepCascadeDiffusion(seed2);
-		// System.out.println("\n|S| = " + seed2.size());
-		System.out.println("|A| = " + ativos2.size());
-		g.deactivate(ativos2);
+		System.out.println("epinions.txt");
+		g = new GraphReader().readEpinions();
+		System.out.println("|C| = " + ps.preSelecaoOriginal(g).size() + "\n");
 
-		// HashSet<Actor> seed3 = new DominatingSeed(g).escolherRandom(15);
-		//
-		// HashSet<Actor> ativos3 = g.indepCascadeDiffusion(seed3);
-		//// System.out.println("\n|S| = " + seed3.size());
-		// System.out.println("|A| = "+ativos3.size());
+		System.out.println("dblp.txt");
+		g = new GraphReader().readDblp();
+		System.out.println("|C| = " + ps.preSelecaoOriginal(g).size() + "\n");
+
+		System.out.println("phy.txt");
+		g = new GraphReader().readPhy();
+		System.out.println("|C| = " + ps.preSelecaoOriginal(g).size() + "\n");
+
+		System.out.println("hep.txt");
+		g = new GraphReader().readHep();
+		System.out.println("|C| = " + ps.preSelecaoOriginal(g).size() + "\n");
+
+		System.out.println("amazon.txt");
+		g = new GraphReader().amazon();
+		System.out.println("|C| = " + ps.preSelecaoOriginal(g).size() + "\n");
 
 	}
 

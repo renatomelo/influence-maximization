@@ -87,9 +87,9 @@ public class GraphReader {
 
 		// uniform IC model
 //		return (double)10/100;
-//		return 0.001;
+//		return 0.025;
 //		return Math.random()/4;
-		return 0.0025;
+		return 0.001;
 	}
 
 	public DirectedSocialNetwork readEpinions() {

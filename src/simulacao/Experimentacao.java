@@ -1,11 +1,5 @@
 package simulacao;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-
-import org.jgrapht.graph.DefaultWeightedEdge;
-
 import algoritmos.HightDegree;
 import algoritmos.LazyGreedy;
 import algoritmos.PrevalentSeed;
@@ -18,19 +12,23 @@ import readgraph.GraphReader;
 public class Experimentacao {
 
 	public static void main(String[] args) {
-		int k = 50;
-//		sinteticGraphSimulate(k);		
+		int k = 30;
+		sinteticGraphSimulate(k);		
 		//Simulações a serem feita com probabilidade 0.01
-//		System.out.println("Simulaçoes realizadas para p = 0.025");
+		//System.out.println("Simulaçoes realizadas para p = 0.025");
 //		System.out.println("Grafos: HEP, PHY e DBLP");
+		//System.out.println("Grafos: AMAZON");
 //		simularHep(k);
-//		simularPhy(k);		
-//		simularDblp(k);
-// 		Simulações a serem feita com probabilidade 0.0025
-		System.out.println("Simulaçoes realizadas para p = 0.0025");
-		System.out.println("Grafos: ENRON e EPINIONS");
-		simularEnron(k);
-		simularEpinions(k);
+		//simularPhy(k);
+		//simularAmazon(k);
+		
+ 		//Simulações a serem feita com probabilidade 0.0025
+		//System.out.println("Simulaçoes realizadas para p = 0.0025");
+		//System.out.println("Grafos: ENRON e EPINIONS");
+		//System.out.println("Grafos: Epinions");
+		//simularEnron(k);
+		//simularEpinions(k);
+		//simularDblp(k); 
 	}
 	
 	private static void simularHep(int k) {
@@ -55,7 +53,6 @@ public class Experimentacao {
 
 		monteCarloSimulation(g, out, k);
 	}
-
 	private static void simularDblp(int k) {
 		System.out.println("dblp.txt");
 		DirectedSocialNetwork g;
@@ -158,7 +155,7 @@ public class Experimentacao {
 	private static void sinteticGraphSimulate(int k) {
 		int n = 2;
 
-		while (n <= 64) {
+		while (n <= 16) {
 			String out = "plots/rand/" + n + "/";
 			sinteticGraph(n, out, k);
 			System.out.println("\t----------");
@@ -168,7 +165,7 @@ public class Experimentacao {
 
 	/**
 	 * Faz um conjunto de simulações para grafos aleatórios de tamanho n e gera
-	 * grafos com os resultados da simulação
+	 * graficos com os resultados da simulação
 	 * 
 	 * @param n
 	 *            multiplo de 1000 para o tamanho dos grafos gerados
@@ -184,53 +181,56 @@ public class Experimentacao {
 		double[] spreadRS = new double[k + 1];
 		double[] mediaCelf = new double[k + 1], mediaPS = new double[k + 1], mediaHD = new double[k + 1],
 				mediaRS = new double[k + 1];
+		double timePS = 0, timeCelf = 0, timeHD = 0, timeRS = 0, time;
 		double[] x;
-		int numSimulacoes = 10;
+		int numSimulacoes = 4;
 
 		for (int i = 0; i < numSimulacoes; i++) {
-			DirectedSocialNetwork g = new SocialNetworkGenerate().gerarGrafo(n * 1000, 2.5);
+			DirectedSocialNetwork g = new SocialNetworkGenerate().gerarGrafo(n * 1000, 2);
 			System.out.println("\nGrafo n. " + (i + 1));
 			mostrarTamanho(g);
 
 			LazyGreedy celf = new LazyGreedy(g);
 			System.out.println("#Celf");
+			time = System.currentTimeMillis() * -1;
 			celf.escolher(k);
+			time += System.currentTimeMillis();
 			spreadCelf = somaVetores(spreadCelf, celf.getSpreadData());
-			// spreadCelf = celf.getSpreadData();
-			// sigmaCalls2 = celf.getCallData();
-			// for (int i = 0; i < spreadData2.length; i++) {
-			// System.out.println(i + "\t" + spreadData2[i]);
-			// }
+			timeCelf = timeCelf + (time / 1000.0f);
 
 			PrevalentSeed ps = new PrevalentSeed(g);
 			System.out.println("#PrevalentSeed");
+			time = System.currentTimeMillis() * -1;
 			ps.escolher(k);
+			time += System.currentTimeMillis();
 			spreadPS = somaVetores(spreadPS, ps.getSpreadData());
-			// sigmaCalls = ps.getCallData();
-			// for (int i = 0; i < spreadData1.length; i++) {
-			// System.out.println(i + "\t" + spreadData1[i]);
-			// }
+			timePS = timePS + (time / 1000.0f);
 
 			// Testa a heuristica de grau
 			HightDegree hd = new HightDegree(g);
 			System.out.println("#HightDegree");
+			time = System.currentTimeMillis() * -1;
 			hd.escolher(k);
+			time += System.currentTimeMillis();
 			spreadHD = somaVetores(spreadHD, hd.getSpreadData());
-			// for (int i = 0; i < spreadData3.length; i++) {
-			// System.out.println(i + "\t" + spreadData3[i]);
-			// }
-
+			timeHD = timeHD + (time / 1000.0f);
+			
 			// Testa a heurística semente aleatória
 			RandomSeed rs = new RandomSeed(g);
 			System.out.println("#RandomSeed");
+			time = System.currentTimeMillis() * -1;
 			rs.escolher(k);
+			time += System.currentTimeMillis();
 			spreadRS = somaVetores(spreadRS, rs.getSpreadData());
-			// for (int i = 0; i < spreadData4.length; i++) {
-			// System.out.println(i + "\t" + spreadData4[i]);
-			// }
+			timeRS = timeRS + (time / 1000.0f);
 		}
+		
+		System.out.println("Tempo Celf: "+timeCelf/numSimulacoes);
+		System.out.println("Tempo PrevalentSeed: "+timePS/numSimulacoes);
+		System.out.println("Tempo HighDegree: "+timeHD/numSimulacoes);
+		System.out.println("Tempo RandomSeed: "+timeRS/numSimulacoes);
 
-		// TODO tirar a média das 20 simulações e plotar a media
+		// tirar a média das 20 simulações e plotar a media
 		for (int i = 0; i < spreadPS.length; i++) {
 			mediaPS[i] = spreadPS[i] / numSimulacoes;
 			mediaCelf[i] = spreadCelf[i] / numSimulacoes;
@@ -240,7 +240,8 @@ public class Experimentacao {
 
 		x = eixox(k + 1); // preenche o vetor do eixo x
 		MeuPlot meuplot = new MeuPlot();
-//		meuplot.plotPropagacao(x, mediaPS, mediaCelf, mediaHD, mediaRS, out);
+		meuplot.plotPropagacao(x, mediaPS, mediaCelf, mediaHD, mediaRS, out);
+//		meuplot.plotPropagacao(x, mediaPS, mediaCelf, out);
 		// meuplot.plotChamadas(sigmaCalls, sigmaCalls2, "'");
 
 	}
