@@ -13,7 +13,7 @@ Random Graph Generative Models:
 
 This project contains the implementation of the algorithms proposed in my paper entitled:
 
--[A preselection algorithm for the influence maximization problem in power law graphs](https://dl.acm.org/doi/abs/10.1145/3167132.3167322)
+- [A preselection algorithm for the influence maximization problem in power law graphs](https://dl.acm.org/doi/abs/10.1145/3167132.3167322)
 
  In this work, we propose a methodology to speedup the Kempe's algorithm with focus on power law graphs. The improvement consists of choosing the most promising nodes in advance. To this end, we explore some properties of power law graphs and the relationship between social influence and degree distribution. We have verified by experimental analysis that this preselection reduces the run time while preserving the quality of the solution.
  
